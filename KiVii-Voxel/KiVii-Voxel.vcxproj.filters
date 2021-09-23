@@ -49,6 +49,12 @@
     <Filter Include="Shaders\Basic Shader">
       <UniqueIdentifier>{efac58ca-ddaa-4469-ad01-158bc9a2ca70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\GLEW\lib">
+      <UniqueIdentifier>{57182c96-2ecb-47b9-a562-676c22cbbab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\GLFW\lib">
+      <UniqueIdentifier>{4c2c2968-5e22-4975-86b6-a9e5971c8ada}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Source.cpp">
@@ -115,6 +121,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\VoxelOctree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1049,6 +1058,9 @@
     <ClInclude Include="Source\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\VoxelOctree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vendor\glm\detail\func_common.inl">
@@ -1465,5 +1477,22 @@
     <None Include="Resources\Shaders\Basic Shader\Vertex.glsl">
       <Filter>Shaders\Basic Shader</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Dependencies\GLEW\lib\Release\x64\glew32.lib">
+      <Filter>Resource Files\GLEW\lib</Filter>
+    </Library>
+    <Library Include="..\Dependencies\GLEW\lib\Release\x64\glew32s.lib">
+      <Filter>Resource Files\GLEW\lib</Filter>
+    </Library>
+    <Library Include="..\Dependencies\GLFW\lib-vc2019\glfw3.lib">
+      <Filter>Resource Files\GLFW\lib</Filter>
+    </Library>
+    <Library Include="..\Dependencies\GLFW\lib-vc2019\glfw3_mt.lib">
+      <Filter>Resource Files\GLFW\lib</Filter>
+    </Library>
+    <Library Include="..\Dependencies\GLFW\lib-vc2019\glfw3dll.lib">
+      <Filter>Resource Files\GLFW\lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>

@@ -9,6 +9,19 @@ unordered_map<int, CubeVoxel*> KManager::m_Cubes;
 unordered_map<int, Camera*> KManager::m_Cameras;
 queue<int> KManager::m_IDsToDelete;
 queue<CubeVoxel*> KManager::m_CubesNotInUse;
+bool KManager::FrustrumCulling(Vector3f pos)
+{
+	Vector3f posInCameraSpace = Vector3f(m_CurrentWindow->GetView()*Vector4f(pos, 1.0f));
+
+	if (posInCameraSpace.z > 0) {
+		return false;
+	}
+	else {
+		return true;
+	}
+
+}
+
 GLFWwindow*& KManager::Init(RenderWindow* win)
 {
 	m_CurrentWindow = win;
@@ -24,6 +37,7 @@ void KManager::InitGui()
 	CubeVoxel::GetVertexBuffer().Init();
 	CubeVoxel::GetVertexArray().Init();
 	CubeVoxel::GetShader().GenerateDefaultShader();
+	RenderTarget::Init();
 }
 
 void KManager::Cleanup()
@@ -72,6 +86,7 @@ void KManager::AddCube(CubeVoxel* cube)
 	static int ID = 0;
 	cube->m_ID = ID;
 	m_Cubes[ID] = cube;
+	ID++;
 
 }
 
@@ -87,23 +102,36 @@ float KManager::GetDeltaTime()
 
 void KManager::UpdateCubes()
 {
-	vector<glm::mat4> matrices;
-	matrices.reserve(m_Cubes.size());
+	
 
 	while (m_IDsToDelete.size() != 0) {
 		m_CubesNotInUse.push(m_Cubes[m_IDsToDelete.front()]);
 		m_Cubes.erase(m_IDsToDelete.front());
 		m_IDsToDelete.pop();
 	}
+	vector<glm::mat4> matrices;
+	vector<Vector3f> colors;
+	colors.reserve(m_Cubes.size());
+	matrices.reserve(m_Cubes.size());
 
+	if (m_CubesNotInUse.size() > 1000) {
+		delete m_CubesNotInUse.front();
+		m_CubesNotInUse.pop();
+	}
 	
+	//cout << Vector3f(m_CurrentWindow->GetView() * Vector4f(m_Cubes[0]->GetPosition(), 1.0f)).x << endl;
 
+	unsigned int index = 0;
 	for (auto& cube : m_Cubes) {
-		matrices.push_back(cube.second->GetModelMatrix());
+		if (FrustrumCulling(cube.second->GetPosition())) {
+			colors.push_back(cube.second->GetColor());
+			matrices.push_back(cube.second->GetModelMatrix());
+			cube.second->SetupForDrawing(index);
+			index++;
+		}
 	}
 	if (matrices.size() > 0) {
-		m_CurrentWindow->DrawInstances(matrices, (int)m_Cubes.size());
+		m_CurrentWindow->DrawInstances((int)m_Cubes.size(), &matrices,&colors);
 	}
-	matrices.clear();
 }
 

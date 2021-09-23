@@ -1,13 +1,15 @@
 #pragma once
 #include "GL_CALL.h"
 #include "KManager.h"
-
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 
 struct RenderWindowProperties {
 	Vector2f size = { 0,0 };
 	float nearClipping = 0.01f;
 	float farClipping = 300.0f;
 	glm::mat4 projectionMatrix;
+	
 };
 
 class RenderWindow {
@@ -17,7 +19,11 @@ private:
 	float m_DeltaTime=0;
 	double currentTime=0, lastTime=0;
 	Camera* m_MainCamera;
+	VertexBuffer m_DrawingVBO;
+	VertexBufferLayout m_DrawingVBL;
 	friend class KManager;
+
+	
 public:
 
 	RenderWindow(Vector2f vec,string title);
@@ -25,7 +31,7 @@ public:
 
 	Vector2f GetSize() { return m_Properties.size; }
 
-	void DrawInstances(vector<glm::mat4>& modelMatrices, int instanceCount);
+	void DrawInstances(int instanceCount, vector<glm::mat4>* modelMatrices,vector<Vector3f>* colors=nullptr);
 
 
 	

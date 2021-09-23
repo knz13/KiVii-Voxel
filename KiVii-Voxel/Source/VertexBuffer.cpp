@@ -16,11 +16,11 @@ void VertexBuffer::Init()
 	GL_CALL(glGenBuffers(1, &m_RendererID));
 }
 
-void VertexBuffer::CreateBuffer(const void* data, unsigned int count)
+void VertexBuffer::CreateBuffer(const void* data, unsigned int count,GLenum DrawingMode)
 {
 	this->Bind();
 	m_NumberOfElements = count;
-	GL_CALL(glBufferData(GL_ARRAY_BUFFER, count*sizeof(float),data, GL_STATIC_DRAW));
+	GL_CALL(glBufferData(GL_ARRAY_BUFFER, count*sizeof(float),data, DrawingMode));
 }
 
 void VertexBuffer::Bind()

@@ -33,6 +33,7 @@
     <ClCompile Include="Source\VertexArray.cpp" />
     <ClCompile Include="Source\VertexBuffer.cpp" />
     <ClCompile Include="Source\VertexBufferLayout.cpp" />
+    <ClCompile Include="Source\VoxelOctree.cpp" />
     <ClCompile Include="Vendor\glm\detail\glm.cpp" />
     <ClCompile Include="Vendor\imgui\imgui.cpp" />
     <ClCompile Include="Vendor\imgui\imgui_demo.cpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="Source\VertexArray.h" />
     <ClInclude Include="Source\VertexBuffer.h" />
     <ClInclude Include="Source\VertexBufferLayout.h" />
+    <ClInclude Include="Source\VoxelOctree.h" />
     <ClInclude Include="Vendor\glm\common.hpp" />
     <ClInclude Include="Vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="Vendor\glm\detail\compute_vector_relational.hpp" />
@@ -493,6 +495,13 @@
     <None Include="Vendor\glm\gtx\vector_angle.inl" />
     <None Include="Vendor\glm\gtx\vector_query.inl" />
     <None Include="Vendor\glm\gtx\wrap.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Dependencies\GLEW\lib\Release\x64\glew32.lib" />
+    <Library Include="..\Dependencies\GLEW\lib\Release\x64\glew32s.lib" />
+    <Library Include="..\Dependencies\GLFW\lib-vc2019\glfw3.lib" />
+    <Library Include="..\Dependencies\GLFW\lib-vc2019\glfw3dll.lib" />
+    <Library Include="..\Dependencies\GLFW\lib-vc2019\glfw3_mt.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

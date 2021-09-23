@@ -15,7 +15,7 @@ private:
 	static queue<int> m_IDsToDelete;
 	static queue<CubeVoxel*> m_CubesNotInUse;
 	
-
+	static bool FrustrumCulling(Vector3f pos);
 public:
 	static GLFWwindow*& Init(RenderWindow* win);
 	static void InitGui();

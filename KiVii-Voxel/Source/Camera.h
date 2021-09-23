@@ -24,6 +24,7 @@ private:
 protected:
 	void Update();
 
+	friend class RenderWindow;
 public:
 	Camera();
 	~Camera();

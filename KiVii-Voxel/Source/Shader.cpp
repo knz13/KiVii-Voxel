@@ -30,10 +30,14 @@ void Shader::GenerateDefaultShader()
 			if (entry.path().filename().string() == "Fragment.glsl") {
 				m_Source.FragmentSource = ParseShader(GL_FRAGMENT_SHADER, m_Filepath + '/' + entry.path().filename().string());
 			}
+			if (entry.path().filename().string() == "Geometry.glsl") {
+				m_Source.GeometrySource = ParseShader(GL_GEOMETRY_SHADER, m_Filepath + '/' + entry.path().filename().string());
+
+			}
 		}
 
 
-		m_RendererID = CreateShader(m_Source.VertexSource, m_Source.FragmentSource);
+		m_RendererID = CreateShader();
 		hasShader = true;
 	}
 }
@@ -54,9 +58,12 @@ void Shader::GenerateShader(std::string VertexAndFragmentFolderName)
 			if (entry.path().filename().string() == "Fragment.glsl") {
 				m_Source.FragmentSource = ParseShader(GL_FRAGMENT_SHADER, mainPath + '/' + entry.path().filename().string());
 			}
+			if (entry.path().filename().string() == "Geometry.glsl") {
+				m_Source.GeometrySource = ParseShader(GL_GEOMETRY_SHADER, m_Filepath + '/' + entry.path().filename().string());
+			}
 		}
 		m_Filepath = mainPath;
-		m_RendererID = CreateShader(m_Source.VertexSource, m_Source.FragmentSource);
+		m_RendererID = CreateShader();
 		hasShader = true;
 		
 	}
@@ -84,7 +91,10 @@ void Shader::SetUniform3f(const string& name, float v0, float v1, float v2)
 
 void Shader::Bind()
 {
+	
 	GL_CALL(glUseProgram(m_RendererID));
+	
+	
 }
 
 void Shader::Unbind()
@@ -125,8 +135,11 @@ string Shader::ParseShader(unsigned int type,const std::string& path)
 			break;
 		case GL_FRAGMENT_SHADER:
 			cout << "couldn't parse Fragment Shader. Try Again" << endl;
+			break;
+		case GL_GEOMETRY_SHADER:
+			cout << "couldn't parse Geometry Shader. Try Again" << endl;
+			break;
 		}
-		
 	}
 	return r_final.str();
 }
@@ -159,18 +172,60 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 
 }
 
-unsigned int Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+unsigned int Shader::CreateShader()
 {
 	unsigned int program = glCreateProgram();
-	unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-	unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+	unsigned int vs = CompileShader(GL_VERTEX_SHADER, m_Source.VertexSource);
+	unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, m_Source.FragmentSource);
+	if (m_Source.GeometrySource != "") {
+		unsigned int gs = CompileShader(GL_GEOMETRY_SHADER, m_Source.GeometrySource);
+		GL_CALL(glAttachShader(program, gs));
+	}
 
 	GL_CALL(glAttachShader(program, vs));
 	GL_CALL(glAttachShader(program, fs));
 
+	GLint numberOfShadersAttached;
+	GL_CALL(glGetProgramiv(program, GL_ATTACHED_SHADERS, &numberOfShadersAttached));
+
+	cout << "Number of Shaders Attached: " << numberOfShadersAttached << endl;
+
 	GL_CALL(glLinkProgram(program));
 
+	GLint linkStatus;
+
+	GL_CALL(glGetProgramiv(program, GL_LINK_STATUS, &linkStatus));
+
+	if (linkStatus != GL_TRUE) {
+
+		GLint maxLength;
+		GL_CALL(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength));
+		char errorMsg[512];
+
+		GL_CALL(glGetProgramInfoLog(program, maxLength, &maxLength, errorMsg));
+
+		cout << errorMsg << endl;
+
+		__debugbreak();
+	}
+
 	GL_CALL(glValidateProgram(program));
+
+	GLint success;
+	GL_CALL(glGetProgramiv(program, GL_VALIDATE_STATUS, &success));
+	if (success != GL_TRUE) {
+
+		GLint maxLength;
+		GL_CALL(glGetProgramiv(program,GL_INFO_LOG_LENGTH, &maxLength));
+		char errorMsg[512];
+		
+		GL_CALL(glGetProgramInfoLog(program, maxLength, &maxLength, errorMsg));
+
+		cout << errorMsg << endl;
+
+		__debugbreak();
+	}
+	
 
 	GL_CALL(glDeleteShader(fs));
 	GL_CALL(glDeleteShader(vs));

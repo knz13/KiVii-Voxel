@@ -39,7 +39,7 @@ void RenderTarget::Init()
 	 0.1,  0.1, -0.1,
 	-0.1,  0.1, -0.1
 	};
-	float indices[] = {
+	unsigned int indices[] = {
 		// front
 		0, 1, 2,
 		2, 3, 0,
@@ -64,6 +64,7 @@ void RenderTarget::Init()
 	m_IB.CreateBuffer(indices, 36);
 	m_VBL.Push<float>(3);
 	m_VAO.AddBuffer(m_VBO, m_VBL);
+	
 }
 
 RenderTarget::RenderTarget()
