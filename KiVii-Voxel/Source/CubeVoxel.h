@@ -10,7 +10,7 @@ class CubeVoxel : public RenderTarget {
 private:
 	int m_ID = -1;
 	glm::mat4 m_ModelMatrix;
-	Vector3f m_CurrentPosition;
+	Vector3i m_CurrentPosition;
 	Color m_Color;
 
 	void SetupModelMatrix();
@@ -28,10 +28,11 @@ public:
 	~CubeVoxel();
 
 
-	void Move(float x,float y,float z);
-	void SetPosition(float x, float y, float z);
+	void Move(int x,int y,int z);
+	void SetPosition(int x, int y, int z);
 	void SetColor(Color color);
-	const Vector3f& GetPosition();
+	const Vector3i& GetPosition();
+	Vector3f GetPositionInWorldSpace();
 	Vector3f GetColor() { return m_Color.getNormalized(); };
 	
 };

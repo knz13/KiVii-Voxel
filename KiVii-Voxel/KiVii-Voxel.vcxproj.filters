@@ -123,7 +123,7 @@
     <ClCompile Include="Source\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\VoxelOctree.cpp">
+    <ClCompile Include="Source\OctreeNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1058,7 +1058,7 @@
     <ClInclude Include="Source\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\VoxelOctree.h">
+    <ClInclude Include="Source\OctreeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

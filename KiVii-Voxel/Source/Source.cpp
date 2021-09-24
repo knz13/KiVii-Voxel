@@ -14,16 +14,36 @@ int main() {
 
 	RenderWindow win(Vector2f(1280, 720), "hello!");
 
-	for (int j = 0; j < 30;j++) {
+	
+	for (int j = 0; j < 90;j++) {
 		for (int i = 0; i < 100; i++) {
 			CubeVoxel* cube = KManager::GenVoxel();
-			cube->SetPosition(-50 + i/2.0f, j*1, -10);
+			cube->SetPosition(-50 + i*5, j*5, -10);
 			cube->SetColor(Color(243,14,105));
 		}
 	}
+	
+	
+	CubeVoxel* myCube = KManager::GenVoxel();
+	myCube->SetColor(Color::Red);
+	myCube->SetPosition(-20, 0, -20);
 
 
 	while (win.isOpen()) {
+
+
+		if (glfwGetKey(KManager::GetGLFWwindowPointer(), GLFW_KEY_UP) == GLFW_PRESS) {
+			myCube->Move(0, 0, -1);
+		}
+		else if (glfwGetKey(KManager::GetGLFWwindowPointer(), GLFW_KEY_DOWN) == GLFW_PRESS) {
+			myCube->Move(0, 0, 1);
+		}
+		else if (glfwGetKey(KManager::GetGLFWwindowPointer(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
+			myCube->Move(1, 0, 0);
+		}
+		else if (glfwGetKey(KManager::GetGLFWwindowPointer(), GLFW_KEY_LEFT) == GLFW_PRESS) {
+			myCube->Move(-1, 0, 0);
+		}
 
 
 

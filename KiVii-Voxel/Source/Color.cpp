@@ -11,6 +11,8 @@ Color::Color(float r, float g, float b)
 
 }
 
+
+
 Color::Color()
 	:m_Color({0,0,0})
 {

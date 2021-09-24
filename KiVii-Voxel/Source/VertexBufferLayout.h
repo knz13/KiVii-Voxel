@@ -28,14 +28,14 @@ public:
 
 	template<>
 	void Push<float>(unsigned int count, bool hasDivisor) {
-		m_Elements.push_back({ GL_FLOAT,count,GL_FALSE });
+		m_Elements.push_back({ GL_FLOAT,count,GL_FALSE,hasDivisor });
 		m_Stride += GL_SIZEOF(GL_FLOAT) * count;
 		m_Count++;
 	}
 
 	template<>
 	void Push<unsigned int>(unsigned int count, bool hasDivisor) {
-		m_Elements.push_back({ GL_UNSIGNED_INT,count,GL_TRUE });
+		m_Elements.push_back({ GL_UNSIGNED_INT,count,GL_TRUE,hasDivisor });
 		m_Stride += GL_SIZEOF(GL_UNSIGNED_INT) * count;
 		m_Count++;
 	}

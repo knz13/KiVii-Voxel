@@ -66,8 +66,8 @@ void RenderWindow::DrawInstances(int instanceCount, vector<glm::mat4>* modelMatr
 
 		m_ColorBuffer.Init();
 
-		m_ColorBuffer.CreateBuffer(colors->data(),3*modelMatrices->size());
-		m_ColorBufferLayout.Push<float>(3);
+		m_ColorBuffer.CreateBuffer(colors->data(),3*colors->size());
+		m_ColorBufferLayout.Push<float>(3,true);
 
 		CubeVoxel::GetVertexArray().AddBuffer(m_ColorBuffer, m_ColorBufferLayout);
 

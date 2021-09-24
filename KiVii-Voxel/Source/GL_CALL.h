@@ -20,8 +20,8 @@ typedef glm::vec4 Vector4f;
 
 using namespace std;
 
-
-
+#define VOXEL_ENTITY_SIZE 0.1f
+#define VOXEL_SIZE 1
 
 #define THROW_ERROR(x) cout << "Error on: " << __FILE__ << " at line: " << __LINE__ << " " << x << endl; 
 

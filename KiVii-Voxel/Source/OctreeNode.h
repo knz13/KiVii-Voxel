@@ -1,8 +1,8 @@
 #pragma once
 #include "GL_CALL.h"
 
-#define VOXEL_SIZE 1
-#define STARTING_NODE_SIZE 512
+
+#define STARTING_NODE_SIZE 256
 
 #define TOP_NORTH_LEFT_NODE 0
 #define TOP_NORTH_RIGHT_NODE 1
@@ -25,30 +25,21 @@ class OctreeNode {
 	unsigned int CheckQuadrant(Vector3i pos);
 	bool CheckIfInNode(Vector3i pos);
 	void AddChildNode(unsigned int placement);
-public:
-	OctreeNode(short int size, Vector3i position);
-	~OctreeNode();
-	
-
-	void deleteInformation(Vector3i position);
-	bool insert(Vector3i position,CubeVoxel* information);
-	CubeVoxel* findInNodes(Vector3i position);
 	void CleanupCommand();
 	void StartCleanup();
 	OctreeNode* GetHeadNode();
 
-};
-
-class VoxelOctree {
-	
-private:
-	static OctreeNode* HeadNode;
-
+	friend class KManager;
 public:
+	OctreeNode(short int size, Vector3i position);
+	~OctreeNode();
+	
+	
+	void DeleteInformation(Vector3i position);
+	bool Insert(Vector3i position,CubeVoxel* information);
+	CubeVoxel* FindInNodes(Vector3i position);
+	
 
-	static void insert(Vector3i position, CubeVoxel* voxel);
-	static bool isClear(Vector3i position);
-	static CubeVoxel* GetPositionObject(Vector3i position);
-	static void Cleanup();
 
 };
+
