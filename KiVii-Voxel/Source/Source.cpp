@@ -4,6 +4,7 @@
 #include "RenderWindow.h"
 #include "KManager.h"
 #include "CubeVoxel.h"
+#include "Camera.h"
 
 
 
@@ -14,17 +15,23 @@ int main() {
 
 	RenderWindow win(Vector2f(1280, 720), "hello!");
 
+
+
 	
-	for (int j = 0; j < 90;j++) {
-		for (int i = 0; i < 100; i++) {
-			CubeVoxel* cube = KManager::GenVoxel();
-			cube->SetPosition(-50 + i*5, j*5, -10);
-			cube->SetColor(Color(243,14,105));
+	for (int k = 0; k < 2; k++) {
+		for (int j = 0; j < 50; j++) {
+			for (int i = 0; i < 500; i++) {
+				CubeVoxel* cube = KManager::GenVoxel();
+				cube->SetPosition(-50 + i * 2, j, -20+k);
+				cube->SetColor(Color::Blue);
+			}
 		}
 	}
 	
 	
+	
 	CubeVoxel* myCube = KManager::GenVoxel();
+
 	myCube->SetColor(Color::Red);
 	myCube->SetPosition(-20, 0, -20);
 
@@ -44,7 +51,14 @@ int main() {
 		else if (glfwGetKey(KManager::GetGLFWwindowPointer(), GLFW_KEY_LEFT) == GLFW_PRESS) {
 			myCube->Move(-1, 0, 0);
 		}
+		else if (glfwGetKey(KManager::GetGLFWwindowPointer(), GLFW_KEY_K) == GLFW_PRESS) {
+			myCube->Move(0, 2, 0);
+		}
+		else if (glfwGetKey(KManager::GetGLFWwindowPointer(), GLFW_KEY_L) == GLFW_PRESS) {
+			myCube->Move(0, -2, 0);
+		}
 
+		//win.GetMainCamera()->CheckIfPointInFrustrum(KManager::GetVoxelPosInWorldSpace(myCube->GetPosition()));
 
 
 		win.Clear();

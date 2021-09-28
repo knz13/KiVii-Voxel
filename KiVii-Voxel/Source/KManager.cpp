@@ -9,7 +9,7 @@ unordered_map<int, CubeVoxel*> KManager::m_Cubes;
 unordered_map<int, Camera*> KManager::m_Cameras;
 queue<int> KManager::m_IDsToDelete;
 queue<CubeVoxel*> KManager::m_CubesNotInUse;
-OctreeNode* KManager::m_OctreeHeadNode = nullptr;
+
 
 bool KManager::FrustrumCulling(Vector3f pos)
 {
@@ -51,7 +51,6 @@ void KManager::InitGui()
 	CubeVoxel::GetVertexArray().Init();
 	CubeVoxel::GetShader().GenerateDefaultShader();
 	RenderTarget::Init();
-	m_OctreeHeadNode = new OctreeNode(STARTING_NODE_SIZE, Vector3i(0, STARTING_NODE_SIZE / 2, 0));
 }
 
 void KManager::Cleanup()
@@ -66,11 +65,8 @@ void KManager::Cleanup()
 	for (auto& camera : m_Cameras) {
 		delete camera.second;
 	}
-	m_OctreeHeadNode = m_OctreeHeadNode->GetHeadNode();
-
-	m_OctreeHeadNode->StartCleanup();
-
-	delete m_OctreeHeadNode;
+	
+	
 
 }
 
@@ -112,6 +108,7 @@ void KManager::AddCube(CubeVoxel* cube)
 void KManager::DeleteCube(CubeVoxel* cube)
 {
 	m_IDsToDelete.push(cube->m_ID);
+	
 }
 
 float KManager::GetDeltaTime()
@@ -121,10 +118,11 @@ float KManager::GetDeltaTime()
 
 void KManager::UpdateCubes()
 {
-	m_OctreeHeadNode = m_OctreeHeadNode->GetHeadNode();
+
 
 	while (m_IDsToDelete.size() != 0) {
-		m_CubesNotInUse.push(m_Cubes[m_IDsToDelete.front()]);
+		CubeVoxel* cube = m_Cubes[m_IDsToDelete.front()];
+		m_CubesNotInUse.push(cube);
 		m_Cubes.erase(m_IDsToDelete.front());
 		m_IDsToDelete.pop();
 	}
@@ -138,8 +136,6 @@ void KManager::UpdateCubes()
 		m_CubesNotInUse.pop();
 	}
 	
-	//cout << Vector3f(m_CurrentWindow->GetView() * Vector4f(m_Cubes[0]->GetPosition(), 1.0f)).x << endl;
-
 	unsigned int index = 0;
 	for (auto& cube : m_Cubes) {
 		if (FrustrumCulling(cube.second->GetPositionInWorldSpace())) {
@@ -152,5 +148,15 @@ void KManager::UpdateCubes()
 	if (matrices.size() > 0) {
 		m_CurrentWindow->DrawInstances((int)matrices.size(), &matrices,&colors);
 	}
+}
+
+Vector3f KManager::GetVoxelPosInWorldSpace(Vector3i pos)
+{
+	return Vector3f(pos) * VOXEL_ENTITY_SIZE;
+}
+
+Vector3i KManager::GetWorldPosInVoxelSpace(Vector3f pos)
+{
+	return pos / VOXEL_ENTITY_SIZE;
 }
 

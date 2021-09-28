@@ -6,7 +6,11 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "glm/gtc/matrix_transform.hpp"
+
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include "glm/glm.hpp"
+#include "glm/gtx/hash.hpp"
 #include <queue>
 #include <iostream>
 #include <string>
@@ -28,6 +32,11 @@ using namespace std;
 
 #define ASSERT(x) if(!(x))  __debugbreak();
 #define ASSERTWITHMSG(x,strg) AssertAndPrint(x,strg); 
+
+static void printVec3(Vector3f vec) {
+    cout << vec.x << ',' << vec.y << ',' << vec.z << endl;
+}
+
 
 static void AssertAndPrint(bool teste, string msg) {
     if (!teste) {

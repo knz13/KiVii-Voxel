@@ -2,9 +2,14 @@
 #include "glm/glm.hpp"
 #include "GL_CALL.h"
 
+
+
+
 class RenderWindow;
 class Camera {
-
+	struct Frustrum {
+		vector<Vector3f> planeNormals;
+	};
 private:
 	int m_ID = -1;
 	RenderWindow* win;
@@ -20,6 +25,10 @@ private:
 	float pitch, yaw;
 	float m_Fov;
 	bool canMove = true;
+	Frustrum m_Frustrum;
+
+	void CalculateFrustrumPlaneNormals();
+
 	friend class KManager;
 protected:
 	void Update();
@@ -47,6 +56,7 @@ public:
 	float GetFov() { return m_Fov; }
 	glm::vec3 GetDirectionVector() { return m_Front; }
 	glm::vec3 GetUpVector() { return m_Up; }
-	glm::mat4 GetView() { Bind(); return m_CurrentView; }
+	glm::mat4 GetView() {  return m_CurrentView; }
+	bool CheckIfPointInFrustrum(Vector3f point);
 	glm::vec3 GetPosition() { return m_CurrentPos; }
 };

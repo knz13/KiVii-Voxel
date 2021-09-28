@@ -1,6 +1,6 @@
 #pragma once
 #include "GuiManager.h"
-#include "OctreeNode.h"
+
 
 class RenderWindow;
 class Camera;
@@ -12,7 +12,7 @@ private:
 	static GLFWwindow* m_CurrentGLFWwindowPointer;
 	static unordered_map<int,CubeVoxel*> m_Cubes;
 	static unordered_map<int, Camera*> m_Cameras;
-	static OctreeNode* m_OctreeHeadNode;
+
 	static queue<int> m_IDsToDelete;
 	static queue<CubeVoxel*> m_CubesNotInUse;
 	
@@ -33,8 +33,8 @@ public:
 	static float GetDeltaTime();
 
 	static void UpdateCubes();
-	static OctreeNode* GetOctree() { return m_OctreeHeadNode; };
-
+	static Vector3f GetVoxelPosInWorldSpace(Vector3i pos);
+	static Vector3i GetWorldPosInVoxelSpace(Vector3f pos);
 	static RenderWindow* GetWindow() { return m_CurrentWindow; };
 	static GLFWwindow* GetGLFWwindowPointer() { return m_CurrentGLFWwindowPointer; };
 	static const unordered_map<int,CubeVoxel*>& GetCubes() { return m_Cubes; };

@@ -2,6 +2,20 @@
 #include "RenderWindow.h"
 #include "KManager.h"
 
+void Camera::CalculateFrustrumPlaneNormals()
+{
+	Vector3f nearNormal, farNormal, leftNormal, rightNormal, topNormal, bottomNormal;
+
+	nearNormal = -m_Front;
+	farNormal = m_Front;
+	leftNormal = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f) - atan(tan(m_Fov / 2) * (float)win->GetSize().x / win->GetSize().y) * 2, Vector3f(0, 1, 0)) * Vector4f(m_Front, 1.0f);
+	rightNormal = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f) + atan(tan(m_Fov / 2) * (float)win->GetSize().x / win->GetSize().y) * 2, Vector3f(0, 1, 0)) * Vector4f(m_Front, 1.0f);
+	topNormal = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f- m_Fov / 2) , Vector3f(1, 0, 0)) * Vector4f(m_Front, 1.0f);
+	bottomNormal = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f+ +m_Fov / 2) , Vector3f(1, 0, 0)) * Vector4f(m_Front, 1.0f);
+
+	m_Frustrum.planeNormals = { nearNormal,farNormal,leftNormal,rightNormal,topNormal,bottomNormal };
+}
+
 void Camera::Update()
 {
 	static bool moving = false;
@@ -67,6 +81,7 @@ Camera::~Camera()
 void Camera::Bind()
 {
 	
+	
 
 	m_Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	
@@ -83,6 +98,7 @@ void Camera::Bind()
 	m_CurrentView = glm::lookAt(glm::vec3(m_CurrentPos.x, m_CurrentPos.y, m_CurrentPos.z), glm::vec3(m_CurrentPos.x + m_Direction.x, m_CurrentPos.y + m_Direction.y, m_CurrentPos.z + m_Direction.z), glm::vec3(0.0f, 1.0f, 0.0f));
 	//m_CurrentView = glm::lookAt(m_CurrentPos, m_LookingAt, glm::vec3(0,1.0f,0));
 
+	this->CalculateFrustrumPlaneNormals();
 }
 
 void Camera::LookTo(float x, float y, float z)
@@ -110,6 +126,18 @@ void Camera::Move(float x, float y, float z)
 {
 	m_CurrentPos += glm::vec3(x * KManager::GetDeltaTime(), y * KManager::GetDeltaTime(), z * KManager::GetDeltaTime());
 	Bind();
+	/*
+	cout << "Near Normal = ";
+	printVec3(m_Frustrum.planeNormals[0]);
+	cout << "Far Normal = ";
+	printVec3(m_Frustrum.planeNormals[1]);
+	cout << "Left Normal = ";
+	printVec3(m_Frustrum.planeNormals[2]);
+	cout << "Right Normal = ";
+	printVec3(m_Frustrum.planeNormals[3]);
+
+	cout << endl;
+	*/
 }
 
 void Camera::SetMovingSpeed(float speed)
@@ -134,6 +162,19 @@ void Camera::SetPosition(glm::vec3 pos)
 {
 	m_CurrentPos = pos;
 	Bind();
+}
+
+bool Camera::CheckIfPointInFrustrum(Vector3f point)
+{
+	Vector4f posInCam = win->GetProjection() * this->GetView() * Vector4f(point, 1.0f);
+	Vector3f posInCameraSpace = Vector3f(posInCam.x, posInCam.y, posInCam.z) / posInCam.w;
+	
+	if (posInCameraSpace.x > -1.2f && posInCameraSpace.x < 1.2f && posInCameraSpace.y > -1.2f && posInCameraSpace.y < 1.2f && posInCameraSpace.z > -1.0f && posInCameraSpace.z < 1.0f) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 

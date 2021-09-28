@@ -20,7 +20,7 @@ public:
 	static Color Red;
 
 
-	Vector3f getNormalized() { return m_Color; }
+	const Vector3f& getNormalized() { return m_Color; }
 
 };
 

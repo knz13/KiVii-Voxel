@@ -2,9 +2,11 @@
 #include "RenderWindow.h"
 
 
+
 void CubeVoxel::SetupModelMatrix()
 {
 	m_ModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(m_CurrentPosition.x*VOXEL_ENTITY_SIZE, m_CurrentPosition.y*VOXEL_ENTITY_SIZE, m_CurrentPosition.z*VOXEL_ENTITY_SIZE));
+	m_ModelMatrix = glm::scale(m_ModelMatrix, glm::vec3(m_ScaleX, m_ScaleY, m_ScaleZ));
 }
 
 void CubeVoxel::SetupForDrawing(unsigned int m_ID)
@@ -39,26 +41,29 @@ CubeVoxel::~CubeVoxel()
 void CubeVoxel::Move(int x, int y, int z)
 {
 
-	KManager::GetOctree()->DeleteInformation(m_CurrentPosition);
+
 	m_CurrentPosition.x += x;
-	m_CurrentPosition.y += y;
-	m_CurrentPosition.z += z;
-	if (KManager::GetOctree()->FindInNodes(m_CurrentPosition)) {
-		KManager::GetOctree()->Insert(m_CurrentPosition, this);
+	if (m_CurrentPosition.y + y >= 0) {
+		m_CurrentPosition.y += y;
 	}
+	
+	m_CurrentPosition.z += z;
+	
+	
 }
 
 void CubeVoxel::SetPosition(int x, int y, int z)
 {
-	KManager::GetOctree()->DeleteInformation(m_CurrentPosition);
+	
 
 	m_CurrentPosition.x = x;
-	m_CurrentPosition.y = y;
+	if (y >= 0) {
+		m_CurrentPosition.y = y;
+	}
 	m_CurrentPosition.z = z;
 
-	if (KManager::GetOctree()->FindInNodes(m_CurrentPosition)) {
-		KManager::GetOctree()->Insert(m_CurrentPosition, this);
-	}
+	 
+	
 }
 
 void CubeVoxel::SetColor(Color color)

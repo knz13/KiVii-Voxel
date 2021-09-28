@@ -38,6 +38,7 @@ public:
 	glm::mat4 GetProjection();
 	glm::mat4 GetView();
 	void SetMainCamera(Camera* camera);
+	Camera* GetMainCamera() { return m_MainCamera; }
 	bool isOpen();
 	void SwapBuffers();
 	void Clear();

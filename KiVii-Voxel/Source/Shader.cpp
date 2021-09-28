@@ -23,14 +23,14 @@ void Shader::GenerateDefaultShader()
 	
 	if (fs::is_directory(m_Filepath)) {
 		for (auto& entry : fs::directory_iterator(m_Filepath)) {
-			if (entry.path().filename().string() == "Vertex.glsl") {
+			if (entry.path().filename().string() == "shader.vert") {
 				m_Source.VertexSource = ParseShader(GL_VERTEX_SHADER, m_Filepath + '/' + entry.path().filename().string());
 
 			}
-			if (entry.path().filename().string() == "Fragment.glsl") {
+			if (entry.path().filename().string() == "shader.frag") {
 				m_Source.FragmentSource = ParseShader(GL_FRAGMENT_SHADER, m_Filepath + '/' + entry.path().filename().string());
 			}
-			if (entry.path().filename().string() == "Geometry.glsl") {
+			if (entry.path().filename().string() == "shader.geom") {
 				m_Source.GeometrySource = ParseShader(GL_GEOMETRY_SHADER, m_Filepath + '/' + entry.path().filename().string());
 
 			}
@@ -51,14 +51,14 @@ void Shader::GenerateShader(std::string VertexAndFragmentFolderName)
 	std::string mainPath = "Resources/Shaders/" + VertexAndFragmentFolderName;
 	if (fs::is_directory(mainPath)) {
 		for (auto& entry : fs::directory_iterator(mainPath)) {
-			if (entry.path().filename().string() == "Vertex.glsl") {
+			if (entry.path().filename().string() == "shader.vert") {
 				m_Source.VertexSource = ParseShader(GL_VERTEX_SHADER, mainPath + '/' + entry.path().filename().string());
 
 			}
-			if (entry.path().filename().string() == "Fragment.glsl") {
+			if (entry.path().filename().string() == "shader.frag") {
 				m_Source.FragmentSource = ParseShader(GL_FRAGMENT_SHADER, mainPath + '/' + entry.path().filename().string());
 			}
-			if (entry.path().filename().string() == "Geometry.glsl") {
+			if (entry.path().filename().string() == "shader.geom") {
 				m_Source.GeometrySource = ParseShader(GL_GEOMETRY_SHADER, m_Filepath + '/' + entry.path().filename().string());
 			}
 		}

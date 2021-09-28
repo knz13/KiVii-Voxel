@@ -22,6 +22,7 @@
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\CubeVoxel.cpp" />
+    <ClCompile Include="Source\Frustrum.cpp" />
     <ClCompile Include="Source\GuiManager.cpp" />
     <ClCompile Include="Source\IndexBuffer.cpp" />
     <ClCompile Include="Source\KManager.cpp" />
@@ -33,7 +34,6 @@
     <ClCompile Include="Source\VertexArray.cpp" />
     <ClCompile Include="Source\VertexBuffer.cpp" />
     <ClCompile Include="Source\VertexBufferLayout.cpp" />
-    <ClCompile Include="Source\OctreeNode.cpp" />
     <ClCompile Include="Vendor\glm\detail\glm.cpp" />
     <ClCompile Include="Vendor\imgui\imgui.cpp" />
     <ClCompile Include="Vendor\imgui\imgui_demo.cpp" />
@@ -53,6 +53,7 @@
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\CubeVoxel.h" />
+    <ClInclude Include="Source\Frustrum.h" />
     <ClInclude Include="Source\GL_CALL.h" />
     <ClInclude Include="Source\GuiManager.h" />
     <ClInclude Include="Source\IndexBuffer.h" />
@@ -64,7 +65,6 @@
     <ClInclude Include="Source\VertexArray.h" />
     <ClInclude Include="Source\VertexBuffer.h" />
     <ClInclude Include="Source\VertexBufferLayout.h" />
-    <ClInclude Include="Source\OctreeNode.h" />
     <ClInclude Include="Vendor\glm\common.hpp" />
     <ClInclude Include="Vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="Vendor\glm\detail\compute_vector_relational.hpp" />
@@ -357,8 +357,8 @@
     <ClInclude Include="Vendor\imgui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\Basic Shader\Fragment.glsl" />
-    <None Include="Resources\Shaders\Basic Shader\Vertex.glsl" />
+    <None Include="Resources\Shaders\Basic Shader\shader.frag" />
+    <None Include="Resources\Shaders\Basic Shader\shader.vert" />
     <None Include="Vendor\glm\detail\func_common.inl" />
     <None Include="Vendor\glm\detail\func_common_simd.inl" />
     <None Include="Vendor\glm\detail\func_exponential.inl" />

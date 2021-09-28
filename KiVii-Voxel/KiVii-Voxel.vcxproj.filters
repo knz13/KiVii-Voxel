@@ -123,7 +123,7 @@
     <ClCompile Include="Source\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\OctreeNode.cpp">
+    <ClCompile Include="Source\Frustrum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1058,7 +1058,7 @@
     <ClInclude Include="Source\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\OctreeNode.h">
+    <ClInclude Include="Source\Frustrum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1471,10 +1471,10 @@
     <None Include="Vendor\glm\gtx\wrap.inl">
       <Filter>Vendor\glm\gtx</Filter>
     </None>
-    <None Include="Resources\Shaders\Basic Shader\Fragment.glsl">
+    <None Include="Resources\Shaders\Basic Shader\shader.frag">
       <Filter>Shaders\Basic Shader</Filter>
     </None>
-    <None Include="Resources\Shaders\Basic Shader\Vertex.glsl">
+    <None Include="Resources\Shaders\Basic Shader\shader.vert">
       <Filter>Shaders\Basic Shader</Filter>
     </None>
   </ItemGroup>
