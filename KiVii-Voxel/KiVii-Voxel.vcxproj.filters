@@ -126,6 +126,9 @@
     <ClCompile Include="Source\Frustrum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\OctreeNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Dependencies\GLEW\include\GL\eglew.h">
@@ -1059,6 +1062,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Frustrum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OctreeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

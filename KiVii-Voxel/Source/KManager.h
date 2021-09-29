@@ -1,5 +1,6 @@
 #pragma once
 #include "GuiManager.h"
+#include "OctreeNode.h"
 
 
 class RenderWindow;
@@ -8,11 +9,12 @@ class CubeVoxel;
 class KManager {
 	
 private:
+	
 	static RenderWindow* m_CurrentWindow;
 	static GLFWwindow* m_CurrentGLFWwindowPointer;
 	static unordered_map<int,CubeVoxel*> m_Cubes;
 	static unordered_map<int, Camera*> m_Cameras;
-
+	static OctreeNode<CubeVoxel>* m_OctreeHead;
 	static queue<int> m_IDsToDelete;
 	static queue<CubeVoxel*> m_CubesNotInUse;
 	
@@ -32,6 +34,7 @@ public:
 
 	static float GetDeltaTime();
 
+	static OctreeNode<CubeVoxel>* GetOctree();
 	static void UpdateCubes();
 	static Vector3f GetVoxelPosInWorldSpace(Vector3i pos);
 	static Vector3i GetWorldPosInVoxelSpace(Vector3f pos);

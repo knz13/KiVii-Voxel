@@ -26,6 +26,7 @@
     <ClCompile Include="Source\GuiManager.cpp" />
     <ClCompile Include="Source\IndexBuffer.cpp" />
     <ClCompile Include="Source\KManager.cpp" />
+    <ClCompile Include="Source\OctreeNode.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\RenderTarget.cpp" />
     <ClCompile Include="Source\RenderWindow.cpp" />
@@ -58,6 +59,7 @@
     <ClInclude Include="Source\GuiManager.h" />
     <ClInclude Include="Source\IndexBuffer.h" />
     <ClInclude Include="Source\KManager.h" />
+    <ClInclude Include="Source\OctreeNode.h" />
     <ClInclude Include="Source\Renderer.h" />
     <ClInclude Include="Source\RenderTarget.h" />
     <ClInclude Include="Source\RenderWindow.h" />

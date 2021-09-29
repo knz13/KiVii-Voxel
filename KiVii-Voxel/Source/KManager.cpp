@@ -1,6 +1,7 @@
 #include "KManager.h"
 #include "RenderWindow.h"
 #include "CubeVoxel.h"
+#include "OctreeNode.h"
 #include "Camera.h"
 
 RenderWindow* KManager::m_CurrentWindow = nullptr;
@@ -9,7 +10,7 @@ unordered_map<int, CubeVoxel*> KManager::m_Cubes;
 unordered_map<int, Camera*> KManager::m_Cameras;
 queue<int> KManager::m_IDsToDelete;
 queue<CubeVoxel*> KManager::m_CubesNotInUse;
-
+OctreeNode<CubeVoxel>* KManager::m_OctreeHead = nullptr;
 
 bool KManager::FrustrumCulling(Vector3f pos)
 {
@@ -51,6 +52,7 @@ void KManager::InitGui()
 	CubeVoxel::GetVertexArray().Init();
 	CubeVoxel::GetShader().GenerateDefaultShader();
 	RenderTarget::Init();
+	m_OctreeHead = new OctreeNode<CubeVoxel>(Vector3i(0, STARTING_NODE_SIZE, 0), STARTING_NODE_SIZE);
 }
 
 void KManager::Cleanup()
@@ -66,7 +68,12 @@ void KManager::Cleanup()
 		delete camera.second;
 	}
 	
-	
+	if (m_OctreeHead != nullptr) {
+
+
+
+		delete m_OctreeHead;
+	}
 
 }
 
@@ -116,9 +123,15 @@ float KManager::GetDeltaTime()
 	return m_CurrentWindow->m_DeltaTime;
 }
 
+OctreeNode<CubeVoxel>* KManager::GetOctree()
+{
+	m_OctreeHead = m_OctreeHead->GetHeadNode();
+	return m_OctreeHead;
+}
+
 void KManager::UpdateCubes()
 {
-
+	m_OctreeHead = m_OctreeHead->GetHeadNode();
 
 	while (m_IDsToDelete.size() != 0) {
 		CubeVoxel* cube = m_Cubes[m_IDsToDelete.front()];

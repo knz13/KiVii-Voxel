@@ -18,22 +18,23 @@ int main() {
 
 
 	
-	for (int k = 0; k < 2; k++) {
-		for (int j = 0; j < 50; j++) {
-			for (int i = 0; i < 500; i++) {
+		
+	for (int j = 0; j < 100; j++) {
+		for (int i = 0; i < 500; i++) {
 				CubeVoxel* cube = KManager::GenVoxel();
-				cube->SetPosition(-50 + i * 2, j, -20+k);
+				cube->SetPosition(-50 + i * 2, j*2, -20);
 				cube->SetColor(Color::Blue);
-			}
 		}
 	}
+		
+	
 	
 	
 	
 	CubeVoxel* myCube = KManager::GenVoxel();
 
 	myCube->SetColor(Color::Red);
-	myCube->SetPosition(-20, 0, -20);
+	myCube->SetPosition(-20, 0, 64);
 
 
 	while (win.isOpen()) {
