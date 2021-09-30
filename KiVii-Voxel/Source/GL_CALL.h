@@ -12,6 +12,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtx/hash.hpp"
 #include <queue>
+#include <functional>
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -32,6 +33,11 @@ using namespace std;
 
 #define ASSERT(x) if(!(x))  __debugbreak();
 #define ASSERTWITHMSG(x,strg) AssertAndPrint(x,strg); 
+
+
+static string GetVec3AsString(Vector3f vec) {
+    return { to_string(vec.x) + "," + to_string(vec.y) + "," + to_string(vec.z) };
+}
 
 static void printVec3(Vector3f vec) {
     cout << vec.x << ',' << vec.y << ',' << vec.z << endl;

@@ -16,25 +16,21 @@ int main() {
 	RenderWindow win(Vector2f(1280, 720), "hello!");
 
 
-
-	
-		
-	for (int j = 0; j < 100; j++) {
-		for (int i = 0; i < 500; i++) {
+	for (int z = 0; z < 100; z++) {
+			for (int x = 0; x < 500; x++) {
 				CubeVoxel* cube = KManager::GenVoxel();
-				cube->SetPosition(-50 + i * 2, j*2, -20);
-				cube->SetColor(Color::Blue);
-		}
+				cube->SetPosition(x, 0, z);
+				cube->SetColor(Color( 255 - x*10,255,255 - z * 10));
+			}
 	}
-		
-	
-	
+
+
 	
 	
 	CubeVoxel* myCube = KManager::GenVoxel();
 
 	myCube->SetColor(Color::Red);
-	myCube->SetPosition(-20, 0, 64);
+	myCube->SetPosition(-20, 0, -20);
 
 
 	while (win.isOpen()) {
@@ -59,8 +55,7 @@ int main() {
 			myCube->Move(0, -2, 0);
 		}
 
-		//win.GetMainCamera()->CheckIfPointInFrustrum(KManager::GetVoxelPosInWorldSpace(myCube->GetPosition()));
-
+		
 
 		win.Clear();
 

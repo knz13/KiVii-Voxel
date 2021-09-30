@@ -1,5 +1,5 @@
 #pragma once
-#include "GuiManager.h"
+#include "GL_CALL.h"
 #include "OctreeNode.h"
 
 
@@ -9,16 +9,18 @@ class CubeVoxel;
 class KManager {
 	
 private:
-	
 	static RenderWindow* m_CurrentWindow;
+	static vector<CubeVoxel*> voxelsToRender;
 	static GLFWwindow* m_CurrentGLFWwindowPointer;
 	static unordered_map<int,CubeVoxel*> m_Cubes;
 	static unordered_map<int, Camera*> m_Cameras;
 	static OctreeNode<CubeVoxel>* m_OctreeHead;
 	static queue<int> m_IDsToDelete;
 	static queue<CubeVoxel*> m_CubesNotInUse;
+
+
+	static void DrawGui();
 	
-	static bool FrustrumCulling(Vector3f pos);
 public:
 	static GLFWwindow*& Init(RenderWindow* win);
 	static void InitGui();
@@ -28,6 +30,7 @@ public:
 
 	static CubeVoxel* GenVoxel();
 
+	
 	
 	static void AddCube(CubeVoxel* cube);
 	static void DeleteCube(CubeVoxel* cube);

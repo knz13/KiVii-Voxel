@@ -6,7 +6,7 @@
 
 struct RenderWindowProperties {
 	Vector2f size = { 0,0 };
-	float nearClipping = 0.01f;
+	float nearClipping = 0.001f;
 	float farClipping = 300.0f;
 	glm::mat4 projectionMatrix;
 	
@@ -34,7 +34,8 @@ public:
 	void DrawInstances(int instanceCount, vector<glm::mat4>* modelMatrices,vector<Vector3f>* colors=nullptr);
 
 
-	
+	float GetRenderNearCutOff();
+	float GetRenderDistance();
 	glm::mat4 GetProjection();
 	glm::mat4 GetView();
 	void SetMainCamera(Camera* camera);

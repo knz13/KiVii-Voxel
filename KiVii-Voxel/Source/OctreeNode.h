@@ -1,16 +1,23 @@
 #pragma once
 #include "GL_CALL.h"
 
+
 #define STARTING_NODE_SIZE 64
-#define TNW 0
-#define TNE 1
+#define TNW 3
+#define TNE 7
 #define TSW 2
-#define TSE 3
-#define BNW 4
+#define TSE 6
+#define BNW 1
 #define BNE 5
-#define BSW 6
-#define BSE 7
+#define BSW 0
+#define BSE 4
 #define OUT_OF_NODE_BOUNDS 8
+
+
+//child:	0 1 2 3 4 5 6 7
+//x :		- - - - + + + +
+//y :		- - + + - - + +
+//z :		- + - + - + - +
 
 
 
@@ -24,9 +31,11 @@ class OctreeNode {
 	char nodePosInVec;
 
 	OctreeNode* GetNodeAt(Vector3i pos);
-	char GetPosInVec(Vector3i pos);
+	char GetPosInVec(Vector3i pos,bool isVoxelSize = false);
 	Vector3i GetPosInVec(char posInVec);
-	
+
+	void GetObjectsInView(std::function<bool(Vector3i,float)> functionForFrustrumTesting,vector<T*>& Objects);
+	friend class KManager;
 public:
 	OctreeNode(Vector3i pos, int size, OctreeNode* parent = nullptr);
 	OctreeNode(OctreeNode* parent, char posInVec);
@@ -125,35 +134,18 @@ inline OctreeNode<T>* OctreeNode<T>::GetNodeAt(Vector3i pos)
 }
 
 template<typename T>
-inline char OctreeNode<T>::GetPosInVec(Vector3i pos)
+inline char OctreeNode<T>::GetPosInVec(Vector3i pos,bool isVoxelSize)
 {
-	if (pos.x >= nodePosition.x && pos.x < nodePosition.x + nodeSize  && pos.y >= nodePosition.y && pos.y < nodePosition.y + nodeSize && pos.z >= nodePosition.z && pos.z < nodePosition.z + nodeSize ) {
-		return TNE;
+	if (nodeSize != 1) {
+		if (pos.x > nodePosition.x + nodeSize / 2+1 || pos.x < nodePosition.x - nodeSize / 2-1 || pos.y > nodePosition.y + nodeSize/2+1 || pos.y < nodePosition.y - nodeSize/2-1 || pos.z > nodePosition.z + nodeSize/2+1 || pos.z < nodePosition.z - nodeSize/2-1) {
+			return OUT_OF_NODE_BOUNDS;
+		}
 	}
-	if (pos.x < nodePosition.x && pos.x >= nodePosition.x - nodeSize  && pos.y >= nodePosition.y && pos.y < nodePosition.y + nodeSize && pos.z >= nodePosition.z && pos.z < nodePosition.z + nodeSize ) {
-		return TNW;
-	}
-	if (pos.x >= nodePosition.x && pos.x < nodePosition.x + nodeSize  && pos.y >= nodePosition.y && pos.y < nodePosition.y + nodeSize && pos.z < nodePosition.z && pos.z >= nodePosition.z - nodeSize) {
-		return TSE;
-	}
-	if (pos.x < nodePosition.x && pos.x >= nodePosition.x - nodeSize && pos.y >= nodePosition.y && pos.y < nodePosition.y + nodeSize && pos.z < nodePosition.z && pos.z >= nodePosition.z - nodeSize) {
-		return TSW;
-	}
-	if (pos.x >= nodePosition.x && pos.x < nodePosition.x + nodeSize && pos.y < nodePosition.y && pos.y >= nodePosition.y - nodeSize && pos.z >= nodePosition.z && pos.z < nodePosition.z + nodeSize) {
-		return BNE;
-	}
-	if (pos.x < nodePosition.x && pos.x >= nodePosition.x - nodeSize && pos.y < nodePosition.y && pos.y >= nodePosition.y - nodeSize && pos.z >= nodePosition.z && pos.z < nodePosition.z + nodeSize) {
-		return BNW;
-	}
-	if (pos.x >= nodePosition.x && pos.x < nodePosition.x + nodeSize && pos.y < nodePosition.y && pos.y >= nodePosition.y - nodeSize && pos.z < nodePosition.z && pos.z >= nodePosition.z - nodeSize) {
-		return BSE;
-	}
-	if (pos.x < nodePosition.x && pos.x >= nodePosition.x - nodeSize && pos.y < nodePosition.y && pos.y >= nodePosition.y - nodeSize && pos.z < nodePosition.z && pos.z >= nodePosition.z - nodeSize) {
-		return BSW;
-	}
-	else {
-		return OUT_OF_NODE_BOUNDS;
-	}
+	char oct = 0;
+	if (pos.x >= nodePosition.x) { oct |= 4; }
+	if (pos.y >= nodePosition.y) { oct |= 2; }
+	if (pos.z >= nodePosition.z) { oct |= 1; }
+	return oct;
 }
 
 template<typename T>
@@ -161,31 +153,58 @@ inline Vector3i OctreeNode<T>::GetPosInVec(char posInVec)
 {
 	switch (posInVec) {
 	case TNE:
-		return Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z + nodeSize / 2);
+		return Vector3i(nodePosition.x + nodeSize / 4, nodePosition.y + nodeSize / 4, nodePosition.z + nodeSize / 4);
 		break;
 	case TNW:
-		return Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z + nodeSize / 2);
+		return Vector3i(nodePosition.x - nodeSize / 4, nodePosition.y + nodeSize / 4, nodePosition.z + nodeSize / 4);
 		break;
 	case TSE:
-		return Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z - nodeSize / 2);
+		return Vector3i(nodePosition.x + nodeSize / 4, nodePosition.y + nodeSize / 4, nodePosition.z - nodeSize / 4);
 		break;
 	case TSW:
-		return Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z - nodeSize / 2);
+		return Vector3i(nodePosition.x - nodeSize / 4, nodePosition.y + nodeSize / 4, nodePosition.z - nodeSize / 4);
 		break;
 	case BNE:
-		return Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z + nodeSize / 2);
+		return Vector3i(nodePosition.x + nodeSize / 4, nodePosition.y - nodeSize / 4, nodePosition.z + nodeSize / 4);
 		break;
 	case BNW:
-		return Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z + nodeSize / 2);
+		return Vector3i(nodePosition.x - nodeSize / 4, nodePosition.y - nodeSize / 4, nodePosition.z + nodeSize / 4);
 		break;
 	case BSE:
-		return Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z - nodeSize / 2);
+		return Vector3i(nodePosition.x + nodeSize / 4, nodePosition.y - nodeSize / 4, nodePosition.z - nodeSize / 4);
 		break;
 	case BSW:
-		return Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z - nodeSize / 2);
+		return Vector3i(nodePosition.x - nodeSize / 4, nodePosition.y - nodeSize / 4, nodePosition.z - nodeSize / 4);
 		break;
 	}
 }
+
+template<typename T>
+inline void OctreeNode<T>::GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting,vector<T*>& Objects)
+{
+	//TODO
+	if (nodeSize != 1) {
+		for (auto& child : childNodes) {
+			if (child != nullptr) {
+				
+				//if (functionForFrustrumTesting(child->nodePosition, child->nodeSize * VOXEL_ENTITY_SIZE)) {
+				child->GetObjectsInView(functionForFrustrumTesting, Objects);
+				//}
+			}
+		}
+	}
+	else {
+		if (functionForFrustrumTesting(nodePosition, nodeSize * VOXEL_ENTITY_SIZE)) {
+			if (nodeInformation != nullptr) {
+				Objects.push_back(nodeInformation);
+			}
+		}
+	}
+
+
+}
+
+
 
 
 template<typename T>
@@ -240,43 +259,43 @@ inline bool OctreeNode<T>::Insert(Vector3i pos, T* information)
 			}
 		}
 		else {
-			if (pos.x > nodePosition.x && pos.y > nodePosition.y && pos.z > nodePosition.z) {
+			if (pos.x >= nodePosition.x && pos.y >= nodePosition.y && pos.z >= nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x + nodeSize/2, nodePosition.y + nodeSize/2, nodePosition.z + nodeSize/2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->Insert(pos, information);
 			}
-			if (pos.x < nodePosition.x && pos.y > nodePosition.y && pos.z > nodePosition.z) {
+			if (pos.x < nodePosition.x && pos.y >= nodePosition.y && pos.z >= nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z + nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->Insert(pos, information);
 			}
-			if (pos.x > nodePosition.x && pos.y > nodePosition.y && pos.z < nodePosition.z) {
+			if (pos.x >= nodePosition.x && pos.y >= nodePosition.y && pos.z < nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z - nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->Insert(pos, information);
 			}
-			if (pos.x < nodePosition.x && pos.y > nodePosition.y && pos.z < nodePosition.z) {
+			if (pos.x < nodePosition.x && pos.y >= nodePosition.y && pos.z < nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z - nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->Insert(pos, information);
 			}
-			if (pos.x > nodePosition.x && pos.y < nodePosition.y && pos.z > nodePosition.z) {
+			if (pos.x >= nodePosition.x && pos.y < nodePosition.y && pos.z >= nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z + nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->Insert(pos, information);
 			}
-			if (pos.x < nodePosition.x && pos.y < nodePosition.y && pos.z > nodePosition.z) {
+			if (pos.x < nodePosition.x && pos.y < nodePosition.y && pos.z >= nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z + nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->Insert(pos, information);
 			}
-			if (pos.x > nodePosition.x && pos.y < nodePosition.y && pos.z < nodePosition.z) {
+			if (pos.x >= nodePosition.x && pos.y < nodePosition.y && pos.z < nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z - nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
@@ -293,6 +312,7 @@ inline bool OctreeNode<T>::Insert(Vector3i pos, T* information)
 	else {
 		if (nodeSize != 1) {
 			char posInVec = this->GetPosInVec(pos);
+			
 			if (childNodes[posInVec] != nullptr) {
 				return childNodes[posInVec]->Insert(pos, information);
 			}

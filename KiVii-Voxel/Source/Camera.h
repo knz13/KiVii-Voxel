@@ -8,7 +8,8 @@
 class RenderWindow;
 class Camera {
 	struct Frustrum {
-		vector<Vector3f> planeNormals;
+		vector<Vector4f> planeNormals;
+		float frustrumFovIncrease = 2.0f;
 	};
 private:
 	int m_ID = -1;
@@ -27,7 +28,7 @@ private:
 	bool canMove = true;
 	Frustrum m_Frustrum;
 
-	void CalculateFrustrumPlaneNormals();
+	void CalculateFrustrumPlanes();
 
 	friend class KManager;
 protected:
@@ -46,6 +47,8 @@ public:
 	
 	void Move(float x, float y, float z);
 
+	void StopMoving() { canMove = false; };
+	void StartMoving() { canMove = true; };
 	void SetMovingSpeed(float speed);
 	void SetSensitivity(float sensitivity);
 	void SetPosition(float x, float y, float z);
@@ -53,10 +56,12 @@ public:
 	void SetStatic(bool b) { canMove = b; };
 	void SetFov(float angle) { m_Fov = angle; };
 
+	bool IsPointInFrustrum(Vector3f point);
+	bool IsVoxelInFrustrum(Vector3i voxelPos, float voxelHalfSize);
+
 	float GetFov() { return m_Fov; }
 	glm::vec3 GetDirectionVector() { return m_Front; }
 	glm::vec3 GetUpVector() { return m_Up; }
 	glm::mat4 GetView() {  return m_CurrentView; }
-	bool CheckIfPointInFrustrum(Vector3f point);
 	glm::vec3 GetPosition() { return m_CurrentPos; }
 };

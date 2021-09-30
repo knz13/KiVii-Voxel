@@ -9,7 +9,7 @@ static void framebuffer_size_callback(GLFWwindow*, int width, int height) {
 	glViewport(0, 0, width, height);
 }
 RenderWindow::RenderWindow(Vector2f vec, string title)
-	:m_Properties({vec,0.01f,300.0f,glm::perspective(45.0f,vec.x/vec.y,0.01f,300.0f)})
+	:m_Properties({vec,0.01f,300.0f,glm::perspective(45.0f,vec.x/vec.y,0.001f,300.0f)})
 {
 	
 
@@ -86,13 +86,23 @@ void RenderWindow::DrawInstances(int instanceCount, vector<glm::mat4>* modelMatr
 
 void RenderWindow::SetMainCamera(Camera* camera)
 {
-	m_Properties.projectionMatrix = glm::perspective(camera->GetFov() , m_Properties.size.x / m_Properties.size.y, m_Properties.nearClipping, m_Properties.farClipping);
+	m_Properties.projectionMatrix = glm::perspective(glm::radians(camera->GetFov()) , m_Properties.size.x / m_Properties.size.y, m_Properties.nearClipping, m_Properties.farClipping);
 	m_MainCamera = camera;
 }
 
 bool RenderWindow::isOpen()
 {
 	return !glfwWindowShouldClose(KManager::GetGLFWwindowPointer());
+}
+
+float RenderWindow::GetRenderDistance()
+{
+	return m_Properties.farClipping;
+}
+
+float RenderWindow::GetRenderNearCutOff()
+{
+	return m_Properties.nearClipping;
 }
 
 glm::mat4 RenderWindow::GetProjection()
