@@ -137,6 +137,9 @@ void KManager::AddCube(CubeVoxel* cube)
 
 void KManager::DeleteCube(CubeVoxel* cube)
 {
+	if (cube->m_IsRendered) {
+		GetOctree()->RemoveInformation(cube->GetPosition());
+	}
 	m_IDsToDelete.push(cube->m_ID);
 	
 }
@@ -156,7 +159,7 @@ void KManager::UpdateCubes()
 {
 	RenderData.clear();
 	m_CurrentWindow->GetMainCamera()->StartMoving();
-	m_OctreeHead = m_OctreeHead->GetHeadNode();
+	//m_OctreeHead = m_OctreeHead->GetHeadNode();
 
 	while (m_IDsToDelete.size() != 0) {
 		CubeVoxel* cube = m_Cubes[m_IDsToDelete.front()];
@@ -167,7 +170,7 @@ void KManager::UpdateCubes()
 
 	
 
-	m_OctreeHead->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(),std::placeholders::_1,std::placeholders::_2), RenderData);
+	KManager::GetOctree()->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(),std::placeholders::_1,std::placeholders::_2), RenderData);
 
 
 	if (m_CubesNotInUse.size() > 1000) {
