@@ -31,7 +31,7 @@ public:
 
 	Vector2f GetSize() { return m_Properties.size; }
 
-	void DrawInstances(int instanceCount, vector<glm::mat4>* modelMatrices,vector<Vector3f>* colors=nullptr);
+	void DrawInstances(int instanceCount, vector<KDrawData>& drawingData);
 
 
 	float GetRenderNearCutOff();

@@ -16,12 +16,14 @@ int main() {
 	RenderWindow win(Vector2f(1280, 720), "hello!");
 
 
-	for (int z = 0; z < 100; z++) {
-			for (int x = 0; x < 500; x++) {
+	for (int y = 0; y < 100;y++) {
+		for (int z = 0; z < 100; z++) {
+			for (int x = 0; x < 100; x++) {
 				CubeVoxel* cube = KManager::GenVoxel();
-				cube->SetPosition(x, 0, z);
-				cube->SetColor(Color( 255 - x*10,255,255 - z * 10));
+				cube->SetPosition(-50 + x*2, y*2, z*2);
+				cube->SetColor(Color(255 - x * 10, 255 - y * 10, 255 - z * 10));
 			}
+		}
 	}
 
 

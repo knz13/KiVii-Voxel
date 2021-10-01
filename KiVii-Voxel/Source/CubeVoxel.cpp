@@ -38,6 +38,12 @@ CubeVoxel::~CubeVoxel()
 {
 }
 
+KDrawData CubeVoxel::GetDrawData(unsigned int id)
+{
+	this->SetupForDrawing(id);
+	return {m_Color.getNormalized(),m_ModelMatrix };
+}
+
 void CubeVoxel::Move(int x, int y, int z)
 {
 	if (m_IsRendered) {

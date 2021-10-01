@@ -10,7 +10,7 @@ class KManager {
 	
 private:
 	static RenderWindow* m_CurrentWindow;
-	static vector<CubeVoxel*> voxelsToRender;
+	static vector<KDrawData> RenderData;
 	static GLFWwindow* m_CurrentGLFWwindowPointer;
 	static unordered_map<int,CubeVoxel*> m_Cubes;
 	static unordered_map<int, Camera*> m_Cameras;

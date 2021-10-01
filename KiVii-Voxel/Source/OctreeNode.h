@@ -34,7 +34,7 @@ class OctreeNode {
 	char GetPosInVec(Vector3i pos,bool isVoxelSize = false);
 	Vector3i GetPosInVec(char posInVec);
 
-	void GetObjectsInView(std::function<bool(Vector3i,float)> functionForFrustrumTesting,vector<T*>& Objects);
+	void GetObjectsInView(std::function<bool(Vector3i,float)> functionForFrustrumTesting,vector<KDrawData>& Objects);
 	friend class KManager;
 public:
 	OctreeNode(Vector3i pos, int size, OctreeNode* parent = nullptr);
@@ -180,23 +180,24 @@ inline Vector3i OctreeNode<T>::GetPosInVec(char posInVec)
 }
 
 template<typename T>
-inline void OctreeNode<T>::GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting,vector<T*>& Objects)
+inline void OctreeNode<T>::GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting,vector<KDrawData>& Objects)
 {
+	
 	//TODO
 	if (nodeSize != 1) {
 		for (auto& child : childNodes) {
 			if (child != nullptr) {
 				
-				//if (functionForFrustrumTesting(child->nodePosition, child->nodeSize * VOXEL_ENTITY_SIZE)) {
+				if (functionForFrustrumTesting(child->nodePosition, child->nodeSize * VOXEL_ENTITY_SIZE)) {
 				child->GetObjectsInView(functionForFrustrumTesting, Objects);
-				//}
+				}
 			}
 		}
 	}
 	else {
 		if (functionForFrustrumTesting(nodePosition, nodeSize * VOXEL_ENTITY_SIZE)) {
 			if (nodeInformation != nullptr) {
-				Objects.push_back(nodeInformation);
+				Objects.push_back(nodeInformation->GetDrawData((unsigned int)Objects.size()));
 			}
 		}
 	}

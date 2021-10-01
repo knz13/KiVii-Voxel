@@ -25,7 +25,7 @@ typedef glm::vec4 Vector4f;
 
 using namespace std;
 
-#define VOXEL_ENTITY_SIZE 0.1f
+#define VOXEL_ENTITY_SIZE 0.5f
 #define VOXEL_SIZE 1
 
 #define THROW_ERROR(x) cout << "Error on: " << __FILE__ << " at line: " << __LINE__ << " " << x << endl; 
@@ -34,6 +34,11 @@ using namespace std;
 #define ASSERT(x) if(!(x))  __debugbreak();
 #define ASSERTWITHMSG(x,strg) AssertAndPrint(x,strg); 
 
+
+struct KDrawData {
+    Vector3f color;
+    glm::mat4 modelMatrix;
+};
 
 static string GetVec3AsString(Vector3f vec) {
     return { to_string(vec.x) + "," + to_string(vec.y) + "," + to_string(vec.z) };

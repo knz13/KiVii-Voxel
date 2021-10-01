@@ -12,7 +12,7 @@ unordered_map<int, Camera*> KManager::m_Cameras;
 queue<int> KManager::m_IDsToDelete;
 queue<CubeVoxel*> KManager::m_CubesNotInUse;
 OctreeNode<CubeVoxel>* KManager::m_OctreeHead = nullptr;
-vector<CubeVoxel*> KManager::voxelsToRender;
+vector<KDrawData> KManager::RenderData;
 
 
 void KManager::DrawGui()
@@ -30,9 +30,18 @@ void KManager::DrawGui()
 		}
 	}
 	ImGui::BulletText(("Camera Pos: " + GetVec3AsString(m_CurrentWindow->GetMainCamera()->GetPosition())).c_str());
-	ImGui::BulletText(("Framerate: " + to_string(1/m_CurrentWindow->m_DeltaTime)).c_str());
-	ImGui::BulletText(("Number Of Objects On Screen: " + to_string(voxelsToRender.size())).c_str());
-	ImGui::BulletText("Fov Change");
+	ImGui::InputFloat("Camera Speed", &m_CurrentWindow->GetMainCamera()->m_MovingSpeed);
+	ImGui::BulletText(("Framerate: " + to_string((int)(1/m_CurrentWindow->m_DeltaTime))).c_str());
+	ImGui::BulletText(("Number Of Objects On Screen: " + to_string(RenderData.size())).c_str());
+
+	ImGui::BulletText("Fov");
+	ImGui::SameLine();
+	
+	if (ImGui::SliderFloat("##323125", &m_CurrentWindow->GetMainCamera()->m_Fov, 0.0f, 100.0f)) {
+		m_CurrentWindow->SetMainCamera(m_CurrentWindow->GetMainCamera());
+	}
+
+	ImGui::BulletText("Fov Cutoff");
 	ImGui::SameLine();
 	ImGui::SliderFloat("##2321", &m_CurrentWindow->GetMainCamera()->m_Frustrum.frustrumFovIncrease, -m_CurrentWindow->GetMainCamera()->GetFov() + 1, 50.0f);
 
@@ -145,7 +154,7 @@ OctreeNode<CubeVoxel>* KManager::GetOctree()
 
 void KManager::UpdateCubes()
 {
-	voxelsToRender.clear();
+	RenderData.clear();
 	m_CurrentWindow->GetMainCamera()->StartMoving();
 	m_OctreeHead = m_OctreeHead->GetHeadNode();
 
@@ -158,31 +167,16 @@ void KManager::UpdateCubes()
 
 	
 
-	m_OctreeHead->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(),std::placeholders::_1,std::placeholders::_2), voxelsToRender);
+	m_OctreeHead->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(),std::placeholders::_1,std::placeholders::_2), RenderData);
 
-	for (auto& voxel : voxelsToRender) {
-		
-	}
-
-	vector<glm::mat4> matrices;
-	vector<Vector3f> colors;
-	colors.reserve(m_Cubes.size());
-	matrices.reserve(m_Cubes.size());
 
 	if (m_CubesNotInUse.size() > 1000) {
 		delete m_CubesNotInUse.front();
 		m_CubesNotInUse.pop();
 	}
-	
-	unsigned int index = 0;
-	for (auto& cube : voxelsToRender) {
-			cube->SetupForDrawing(index);
-			colors.push_back(cube->GetColor());
-			matrices.push_back(cube->GetModelMatrix());
-			index++;
-	}
-	if (matrices.size() > 0) {
-		m_CurrentWindow->DrawInstances((int)matrices.size(), &matrices,&colors);
+
+	if (RenderData.size() > 0) {
+		m_CurrentWindow->DrawInstances(RenderData.size(), RenderData);
 	}
 
 

@@ -5,6 +5,8 @@
 #include "Color.h"
 
 
+
+
 class CubeVoxel : public RenderTarget {
 
 private:
@@ -29,7 +31,7 @@ public:
 	CubeVoxel();
 	~CubeVoxel();
 
-
+	KDrawData GetDrawData(unsigned int id);
 	void Move(int x,int y,int z);
 	void SetPosition(int x, int y, int z);
 	void SetColor(Color color);
