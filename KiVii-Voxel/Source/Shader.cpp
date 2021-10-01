@@ -34,6 +34,9 @@ void Shader::GenerateDefaultShader()
 				m_Source.GeometrySource = ParseShader(GL_GEOMETRY_SHADER, m_Filepath + '/' + entry.path().filename().string());
 
 			}
+			if (entry.path().filename().string() == "shader.comp") {
+				m_Source.ComputeSource = ParseShader(GL_COMPUTE_SHADER, m_Filepath + '/' + entry.path().filename().string());
+			}
 		}
 
 
@@ -59,7 +62,10 @@ void Shader::GenerateShader(std::string VertexAndFragmentFolderName)
 				m_Source.FragmentSource = ParseShader(GL_FRAGMENT_SHADER, mainPath + '/' + entry.path().filename().string());
 			}
 			if (entry.path().filename().string() == "shader.geom") {
-				m_Source.GeometrySource = ParseShader(GL_GEOMETRY_SHADER, m_Filepath + '/' + entry.path().filename().string());
+				m_Source.GeometrySource = ParseShader(GL_GEOMETRY_SHADER, mainPath + '/' + entry.path().filename().string());
+			}
+			if (entry.path().filename().string() == "shader.comp") {
+				m_Source.ComputeSource = ParseShader(GL_COMPUTE_SHADER, mainPath + '/' + entry.path().filename().string());
 			}
 		}
 		m_Filepath = mainPath;
@@ -87,6 +93,11 @@ void Shader::SetUniform1i(const string& name, int value)
 void Shader::SetUniform3f(const string& name, float v0, float v1, float v2)
 {
 	GL_CALL(glUniform3f(GetUniformLocation(name), v0, v1, v2));
+}
+
+void Shader::SetUniform3f(const string& name, Vector3f vec)
+{
+	this->SetUniform3f(name, vec.x, vec.y, vec.z);
 }
 
 void Shader::Bind()
@@ -128,6 +139,7 @@ string Shader::ParseShader(unsigned int type,const std::string& path)
 			r_final << s << endl;
 		}
 	}
+
 	else {
 		switch (type) {
 		case GL_VERTEX_SHADER:
@@ -139,6 +151,8 @@ string Shader::ParseShader(unsigned int type,const std::string& path)
 		case GL_GEOMETRY_SHADER:
 			cout << "couldn't parse Geometry Shader. Try Again" << endl;
 			break;
+		case GL_COMPUTE_SHADER:
+			cout << "couldn't parse Compute Shader. Try Again" << endl;
 		}
 	}
 	return r_final.str();
@@ -157,10 +171,22 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 	if (result == GL_FALSE) {
 		int length;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-		char message[512]; //allocates on the stack dinamically.
+		char message[512];
 
 		glGetShaderInfoLog(id, length, &length, message);
-		cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " Shader." << endl;
+		switch (type) {
+		case GL_VERTEX_SHADER:
+			cout << "Failed to compile vertex shader!" << endl;
+			break;
+		case GL_FRAGMENT_SHADER:
+			cout << "Failed to compile fragment shader!" << endl;
+			break;
+		case GL_GEOMETRY_SHADER:
+			cout << "Failed to compile geomtry shader!" << endl;
+			break;
+		case GL_COMPUTE_SHADER:
+			cout << "Failed to compile compute shader!" << endl;
+		}
 		cout << message << endl;
 		
 		glDeleteShader(id);
@@ -175,15 +201,25 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 unsigned int Shader::CreateShader()
 {
 	unsigned int program = glCreateProgram();
-	unsigned int vs = CompileShader(GL_VERTEX_SHADER, m_Source.VertexSource);
-	unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, m_Source.FragmentSource);
+	if (m_Source.VertexSource != "") {
+		unsigned int vs = CompileShader(GL_VERTEX_SHADER, m_Source.VertexSource);
+		GL_CALL(glAttachShader(program, vs));
+	}
+	if (m_Source.FragmentSource != "") {
+		unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, m_Source.FragmentSource);
+		GL_CALL(glAttachShader(program, fs));
+	}
 	if (m_Source.GeometrySource != "") {
 		unsigned int gs = CompileShader(GL_GEOMETRY_SHADER, m_Source.GeometrySource);
 		GL_CALL(glAttachShader(program, gs));
 	}
+	if (m_Source.ComputeSource != "") {
+		unsigned int cs = CompileShader(GL_COMPUTE_SHADER, m_Source.ComputeSource);
+		GL_CALL(glAttachShader(program, cs));
+	}
+	
 
-	GL_CALL(glAttachShader(program, vs));
-	GL_CALL(glAttachShader(program, fs));
+	
 
 	GLint numberOfShadersAttached;
 	GL_CALL(glGetProgramiv(program, GL_ATTACHED_SHADERS, &numberOfShadersAttached));
@@ -226,9 +262,7 @@ unsigned int Shader::CreateShader()
 		__debugbreak();
 	}
 	
-
-	GL_CALL(glDeleteShader(fs));
-	GL_CALL(glDeleteShader(vs));
+	
 
 	return program;
 }

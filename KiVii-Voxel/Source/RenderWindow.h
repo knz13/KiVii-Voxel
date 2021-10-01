@@ -3,6 +3,7 @@
 #include "KManager.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include "Renderer.h"
 
 struct RenderWindowProperties {
 	Vector2f size = { 0,0 };
@@ -12,7 +13,7 @@ struct RenderWindowProperties {
 	
 };
 
-class RenderWindow {
+class RenderWindow : public Renderer {
 
 private:
 	RenderWindowProperties m_Properties;
@@ -32,7 +33,7 @@ public:
 	Vector2f GetSize() { return m_Properties.size; }
 
 	void DrawInstances(int instanceCount, vector<KDrawData>& drawingData);
-
+	
 
 	float GetRenderNearCutOff();
 	float GetRenderDistance();

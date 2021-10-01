@@ -3,9 +3,10 @@
 #include <unordered_map>
 
 struct ShaderProgramSource {
-	std::string VertexSource;
-	std::string FragmentSource;
+	std::string VertexSource="";
+	std::string FragmentSource="";
 	std::string GeometrySource = "";
+	std::string ComputeSource = "";
 };
 
 class Shader {
@@ -16,6 +17,7 @@ private:
 	std::string m_Filepath;
 	std::unordered_map<string, int> m_UniformLocationCache;
 	bool hasShader = false;
+
 public:
 	Shader();
 	~Shader();
@@ -26,6 +28,7 @@ public:
 	void SetUniform1f(const string& name, float value);
 	void SetUniform1i(const string& name, int value);
 	void SetUniform3f(const string& name, float v0, float v1, float v2);
+	void SetUniform3f(const string& name, Vector3f vec);
 	void SetUniform4f(const string& name, float v0, float v1, float v2, float v3);
 	void SetUniformMat4f(const string& name, const glm::mat4& mat);
 	

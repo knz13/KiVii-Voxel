@@ -56,7 +56,7 @@ RenderWindow::RenderWindow(Vector2f vec, string title)
 
 	GL_CALL(glEnable(GL_DEPTH_TEST));
 	GL_CALL(glDepthFunc(GL_LESS));
-	GL_CALL(glEnable(GL_CULL_FACE));
+	//GL_CALL(glEnable(GL_CULL_FACE));
 
 	glfwSetWindowSizeCallback(KManager::GetGLFWwindowPointer(), window_size_callback);
 	glfwSetFramebufferSizeCallback(KManager::GetGLFWwindowPointer(), framebuffer_size_callback);
@@ -123,6 +123,9 @@ float RenderWindow::GetRenderDistance()
 {
 	return m_Properties.farClipping;
 }
+
+
+
 
 float RenderWindow::GetRenderNearCutOff()
 {

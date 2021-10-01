@@ -2,10 +2,12 @@
 #include "GL_CALL.h"
 #include "OctreeNode.h"
 
-
+class ScreenQuad;
 class RenderWindow;
+class VertexArray;
 class Camera;
 class CubeVoxel;
+class ComputeShader;
 class KManager {
 	
 private:
@@ -17,7 +19,8 @@ private:
 	static OctreeNode<CubeVoxel>* m_OctreeHead;
 	static queue<int> m_IDsToDelete;
 	static queue<CubeVoxel*> m_CubesNotInUse;
-
+	static ScreenQuad m_ScreenQuad;
+	static ComputeShader m_ComputeShader;
 
 	static void DrawGui();
 	

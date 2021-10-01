@@ -21,16 +21,20 @@
   <ItemGroup>
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Color.cpp" />
+    <ClCompile Include="Source\ComputeShader.cpp" />
     <ClCompile Include="Source\CubeVoxel.cpp" />
     <ClCompile Include="Source\Frustrum.cpp" />
     <ClCompile Include="Source\GuiManager.cpp" />
     <ClCompile Include="Source\IndexBuffer.cpp" />
     <ClCompile Include="Source\KManager.cpp" />
+    <ClCompile Include="Source\KTexture.cpp" />
     <ClCompile Include="Source\OctreeNode.cpp" />
     <ClCompile Include="Source\Renderer.cpp" />
     <ClCompile Include="Source\RenderTarget.cpp" />
     <ClCompile Include="Source\RenderWindow.cpp" />
+    <ClCompile Include="Source\ScreenQuad.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
+    <ClCompile Include="Source\ShaderStorageBuffer.cpp" />
     <ClCompile Include="Source\Source.cpp" />
     <ClCompile Include="Source\VertexArray.cpp" />
     <ClCompile Include="Source\VertexBuffer.cpp" />
@@ -53,17 +57,21 @@
     <ClInclude Include="..\Dependencies\GLFW\include\GLFW\glfw3native.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Color.h" />
+    <ClInclude Include="Source\ComputeShader.h" />
     <ClInclude Include="Source\CubeVoxel.h" />
     <ClInclude Include="Source\Frustrum.h" />
     <ClInclude Include="Source\GL_CALL.h" />
     <ClInclude Include="Source\GuiManager.h" />
     <ClInclude Include="Source\IndexBuffer.h" />
     <ClInclude Include="Source\KManager.h" />
+    <ClInclude Include="Source\KTexture.h" />
     <ClInclude Include="Source\OctreeNode.h" />
     <ClInclude Include="Source\Renderer.h" />
     <ClInclude Include="Source\RenderTarget.h" />
     <ClInclude Include="Source\RenderWindow.h" />
+    <ClInclude Include="Source\ScreenQuad.h" />
     <ClInclude Include="Source\Shader.h" />
+    <ClInclude Include="Source\ShaderStorageBuffer.h" />
     <ClInclude Include="Source\VertexArray.h" />
     <ClInclude Include="Source\VertexBuffer.h" />
     <ClInclude Include="Source\VertexBufferLayout.h" />
@@ -361,6 +369,9 @@
   <ItemGroup>
     <None Include="Resources\Shaders\Basic Shader\shader.frag" />
     <None Include="Resources\Shaders\Basic Shader\shader.vert" />
+    <None Include="Resources\Shaders\RayTracing Shader\shader.comp" />
+    <None Include="Resources\Shaders\ScreenQuad Shader\shader.frag" />
+    <None Include="Resources\Shaders\ScreenQuad Shader\shader.vert" />
     <None Include="Vendor\glm\detail\func_common.inl" />
     <None Include="Vendor\glm\detail\func_common_simd.inl" />
     <None Include="Vendor\glm\detail\func_exponential.inl" />

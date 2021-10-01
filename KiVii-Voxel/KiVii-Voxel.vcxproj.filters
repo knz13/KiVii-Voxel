@@ -55,6 +55,12 @@
     <Filter Include="Resource Files\GLFW\lib">
       <UniqueIdentifier>{4c2c2968-5e22-4975-86b6-a9e5971c8ada}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\RayTracing Shader">
+      <UniqueIdentifier>{cf63624e-7f62-41f2-b68d-1bd81ae7b6a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\ScreenQuad Shader">
+      <UniqueIdentifier>{96e9370a-9f7c-4759-a897-a3d7e81ee486}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Source.cpp">
@@ -127,6 +133,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\OctreeNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\KTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ShaderStorageBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ComputeShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ScreenQuad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1067,6 +1085,18 @@
     <ClInclude Include="Source\OctreeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\KTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShaderStorageBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ComputeShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ScreenQuad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vendor\glm\detail\func_common.inl">
@@ -1482,6 +1512,15 @@
     </None>
     <None Include="Resources\Shaders\Basic Shader\shader.vert">
       <Filter>Shaders\Basic Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\RayTracing Shader\shader.comp">
+      <Filter>Shaders\RayTracing Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\ScreenQuad Shader\shader.vert">
+      <Filter>Shaders\ScreenQuad Shader</Filter>
+    </None>
+    <None Include="Resources\Shaders\ScreenQuad Shader\shader.frag">
+      <Filter>Shaders\ScreenQuad Shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

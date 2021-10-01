@@ -58,6 +58,7 @@ static void AssertAndPrint(bool teste, string msg) {
 
 
 #define GL_CALL(x) GLClearError(); x; ASSERT(gl_Log_Call(#x,__FILE__,__LINE__))
+#define GL_CALL_WITH_RETURN(x,y) GLClearError(); y=x; ASSERT(gl_Log_Call(#x,__FILE__,__LINE__))
 
 static void GLClearError() {
 

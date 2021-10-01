@@ -4,6 +4,8 @@
 #include "CubeVoxel.h"
 #include "OctreeNode.h"
 #include "Camera.h"
+#include "ScreenQuad.h"
+#include "ComputeShader.h"
 
 RenderWindow* KManager::m_CurrentWindow = nullptr;
 GLFWwindow* KManager::m_CurrentGLFWwindowPointer = nullptr;
@@ -13,7 +15,8 @@ queue<int> KManager::m_IDsToDelete;
 queue<CubeVoxel*> KManager::m_CubesNotInUse;
 OctreeNode<CubeVoxel>* KManager::m_OctreeHead = nullptr;
 vector<KDrawData> KManager::RenderData;
-
+ComputeShader KManager::m_ComputeShader;
+ScreenQuad KManager::m_ScreenQuad;
 
 void KManager::DrawGui()
 {
@@ -48,7 +51,9 @@ void KManager::DrawGui()
 
 	ImGui::BulletText("Draw Distance");
 	ImGui::SameLine();
-	ImGui::SliderFloat("##231", &m_CurrentWindow->m_Properties.farClipping, 10.0f, 300.0f);
+	if (ImGui::SliderFloat("##231", &m_CurrentWindow->m_Properties.farClipping, 10.0f, 300.0f)) {
+		m_CurrentWindow->SetMainCamera(m_CurrentWindow->GetMainCamera());
+	}
 
 
 	ImGui::End();
@@ -75,6 +80,9 @@ void KManager::InitGui()
 	CubeVoxel::GetVertexArray().Init();
 	CubeVoxel::GetShader().GenerateDefaultShader();
 	RenderTarget::Init();
+	m_ScreenQuad.Init();
+	m_ComputeShader.Init();
+	m_ComputeShader.GenerateShader("RayTracing Shader");
 	m_OctreeHead = new OctreeNode<CubeVoxel>(Vector3i(0, STARTING_NODE_SIZE/2, 0), STARTING_NODE_SIZE);
 }
 
@@ -159,7 +167,7 @@ void KManager::UpdateCubes()
 {
 	RenderData.clear();
 	m_CurrentWindow->GetMainCamera()->StartMoving();
-	//m_OctreeHead = m_OctreeHead->GetHeadNode();
+	
 
 	while (m_IDsToDelete.size() != 0) {
 		CubeVoxel* cube = m_Cubes[m_IDsToDelete.front()];
@@ -168,9 +176,18 @@ void KManager::UpdateCubes()
 		m_IDsToDelete.pop();
 	}
 
+	m_ComputeShader.Bind();
+	m_ComputeShader.SetUniform3f("eyePos", m_CurrentWindow->GetMainCamera()->GetPosition());
+	m_ComputeShader.SetUniform3f("eyeDir", m_CurrentWindow->GetMainCamera()->m_Front);
+	m_ScreenQuad.GetTexture().Init(GL_TEXTURE_2D, m_CurrentWindow->GetSize().x, m_CurrentWindow->GetSize().y,nullptr,GL_RGBA32F);
+	m_ScreenQuad.GetTexture().BindImageTexture(0, GL_WRITE_ONLY, GL_RGBA32F);
+	m_ComputeShader.Dispatch(m_CurrentWindow->GetSize().x, m_CurrentWindow->GetSize().y, 1);
+	m_ComputeShader.Join();
+
+	
 	
 
-	KManager::GetOctree()->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(),std::placeholders::_1,std::placeholders::_2), RenderData);
+	//KManager::GetOctree()->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(),std::placeholders::_1,std::placeholders::_2), RenderData);
 
 
 	if (m_CubesNotInUse.size() > 1000) {
@@ -178,10 +195,19 @@ void KManager::UpdateCubes()
 		m_CubesNotInUse.pop();
 	}
 
+	
+	
+	m_ScreenQuad.Bind();
+	m_ScreenQuad.GetShader().Bind();
+	m_ScreenQuad.GetTexture().Bind(0);
+	m_ScreenQuad.GetShader().SetUniform1i("tex0", 0);
+	
+	m_CurrentWindow->DrawCurrentBoundNoIB(6,GL_TRIANGLES);
+	/*
 	if (RenderData.size() > 0) {
 		m_CurrentWindow->DrawInstances(RenderData.size(), RenderData);
 	}
-
+	*/
 
 
 	DrawGui();

@@ -10,14 +10,14 @@ private:
 	unsigned int m_indexOffset = 0;
 	unsigned int m_cummulativeOffset = 0;
 
-	void Init();
+	
 	
 	friend class KManager;
 public:
 	VertexArray();
 	~VertexArray() {};
 
-	
+	void Init();
 	void AddBuffer(VertexBuffer& vb, VertexBufferLayout vbl);
 
 	void SetCummulativeOffset(unsigned int stride) { m_cummulativeOffset = stride; };
