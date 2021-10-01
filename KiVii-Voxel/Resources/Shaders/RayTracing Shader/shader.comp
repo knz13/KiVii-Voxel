@@ -1,10 +1,14 @@
 #version 430 core
 
-layout(local_size_x = 2, local_size_y = 2) in;
-layout(binding = 0, rgba32f) uniform image2D framebuffer;
+layout(local_size_x = 8, local_size_y = 8) in;
+layout(binding = 0, rgba8) uniform image2D framebuffer;
 
 uniform vec3 eyePos;
-uniform vec3 eyeDir;
+
+uniform vec3 ray00;
+uniform vec3 ray01;
+uniform vec3 ray11;
+uniform vec3 ray10;
 
 struct box {
   vec3 min;
@@ -62,13 +66,19 @@ vec4 trace(vec3 origin, vec3 dir) {
 
 void main(){
 
-	ivec2 imageDimensions = imageSize(framebuffer);
+	ivec2 size = imageSize(framebuffer);
 
 	
-	ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 pix = ivec2(gl_GlobalInvocationID.xy);
 
-    vec4 pixelOutColor = trace(eyePos,eyeDir);
+    if (pix.x >= size.x || pix.y >= size.y) {
+    return;
+    }
+    vec2 pos = vec2(pix) / vec2(size.x, size.y);
+    vec3 dir = mix(mix(ray00, ray01, pos.y), mix(ray10, ray11, pos.y), pos.x);
 
-	imageStore(framebuffer,pixelCoords,pixelOutColor);
+    vec4 pixelOutColor = trace(eyePos,dir);
+
+	imageStore(framebuffer,pix,pixelOutColor);
 
 }

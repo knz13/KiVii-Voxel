@@ -9,6 +9,7 @@ class RenderWindow;
 class Camera {
 	struct Frustrum {
 		vector<Vector4f> planeNormals;
+		glm::mat4 inverseViewProjMat;
 		float frustrumFovIncrease = 2.0f;
 	};
 private:

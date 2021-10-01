@@ -176,13 +176,40 @@ void KManager::UpdateCubes()
 		m_IDsToDelete.pop();
 	}
 
+	//m_CurrentWindow->GetMainCamera()->SetPosition(3, 2, 7);
+
 	m_ComputeShader.Bind();
 	m_ComputeShader.SetUniform3f("eyePos", m_CurrentWindow->GetMainCamera()->GetPosition());
-	m_ComputeShader.SetUniform3f("eyeDir", m_CurrentWindow->GetMainCamera()->m_Front);
-	m_ScreenQuad.GetTexture().Init(GL_TEXTURE_2D, m_CurrentWindow->GetSize().x, m_CurrentWindow->GetSize().y,nullptr,GL_RGBA32F);
-	m_ScreenQuad.GetTexture().BindImageTexture(0, GL_WRITE_ONLY, GL_RGBA32F);
+
+	Vector4f ray00, ray01, ray10, ray11;
+		
+	ray00 = Vector4f(m_CurrentWindow->GetMainCamera()->m_Frustrum.inverseViewProjMat * Vector4f(-1, -1, 0, 1));
+	ray10 = Vector4f(m_CurrentWindow->GetMainCamera()->m_Frustrum.inverseViewProjMat*Vector4f(1,-1,0,1));
+	ray01 = Vector4f(m_CurrentWindow->GetMainCamera()->m_Frustrum.inverseViewProjMat*Vector4f(-1,1,0,1));
+	ray11 = Vector4f(m_CurrentWindow->GetMainCamera()->m_Frustrum.inverseViewProjMat*Vector4f(1,1,0,1));
+
+	ray00 /= ray00.w;
+	ray10 /= ray10.w;
+	ray01 /= ray01.w;
+	ray11 /= ray11.w;
+
+	ray00 -= Vector4f(m_CurrentWindow->GetMainCamera()->GetPosition(),1.0f);
+	ray10 -= Vector4f(m_CurrentWindow->GetMainCamera()->GetPosition(),1.0f);
+	ray01 -= Vector4f(m_CurrentWindow->GetMainCamera()->GetPosition(),1.0f);
+	ray11 -= Vector4f(m_CurrentWindow->GetMainCamera()->GetPosition(),1.0f);
+
+	m_ComputeShader.SetUniform3f("ray00", ray00);
+	m_ComputeShader.SetUniform3f("ray10", ray10);
+	m_ComputeShader.SetUniform3f("ray01", ray01);
+	m_ComputeShader.SetUniform3f("ray11", ray11);
+
+
+
+
+	m_ScreenQuad.GetTexture().Init(GL_TEXTURE_2D, m_CurrentWindow->GetSize().x, m_CurrentWindow->GetSize().y,nullptr,GL_RGBA8);
+	m_ScreenQuad.GetTexture().BindImageTexture(0, GL_WRITE_ONLY, GL_RGBA8);
 	m_ComputeShader.Dispatch(m_CurrentWindow->GetSize().x, m_CurrentWindow->GetSize().y, 1);
-	m_ComputeShader.Join();
+	
 
 	
 	
@@ -196,7 +223,7 @@ void KManager::UpdateCubes()
 	}
 
 	
-	
+	m_ComputeShader.Join();
 	m_ScreenQuad.Bind();
 	m_ScreenQuad.GetShader().Bind();
 	m_ScreenQuad.GetTexture().Bind(0);

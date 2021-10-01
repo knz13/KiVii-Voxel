@@ -7,7 +7,8 @@ void Camera::CalculateFrustrumPlanes()
 	Vector4f nearNormal, farNormal, leftNormal, rightNormal, topNormal, bottomNormal;
 	glm::mat4 projMat = glm::perspective(glm::radians(this->m_Fov+m_Frustrum.frustrumFovIncrease), (float)win->GetSize().x / win->GetSize().y, win->GetRenderNearCutOff(), win->GetRenderDistance());
 	glm::mat4 viewProjMat0 = projMat * this->GetView();
-	
+	m_Frustrum.inverseViewProjMat = glm::inverse(viewProjMat0);
+
 	float viewProjMat[] = {
 		viewProjMat0[0][0],viewProjMat0[0][1],viewProjMat0[0][2],viewProjMat0[0][3],
 		viewProjMat0[1][0],viewProjMat0[1][1],viewProjMat0[1][2],viewProjMat0[1][3],

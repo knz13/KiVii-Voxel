@@ -27,6 +27,16 @@ void ComputeShader::Init()
 	GL_CALL(glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &maxWorkGroups.y));
 	GL_CALL(glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &maxWorkGroups.z));
 
+	Vector3i maxGroupSize;
+
+	GL_CALL(glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &maxGroupSize.x));
+	GL_CALL(glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &maxGroupSize.y));
+	GL_CALL(glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &maxGroupSize.z));
+	
+	
 	cout << "Max Work Groups: ";
 	printVec3(maxWorkGroups);
+
+	cout << "Max Group Size: ";
+	printVec3(maxGroupSize);
 }
