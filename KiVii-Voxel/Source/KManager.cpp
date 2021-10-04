@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "ScreenQuad.h"
 #include "ComputeShader.h"
+#include "ShaderStorageBuffer.h"
 
 RenderWindow* KManager::m_CurrentWindow = nullptr;
 GLFWwindow* KManager::m_CurrentGLFWwindowPointer = nullptr;
@@ -17,6 +18,7 @@ OctreeNode<CubeVoxel>* KManager::m_OctreeHead = nullptr;
 vector<KDrawData> KManager::RenderData;
 ComputeShader KManager::m_ComputeShader;
 ScreenQuad KManager::m_ScreenQuad;
+ShaderStorageBuffer KManager::m_ComputeStorageBuffer;
 
 void KManager::DrawGui()
 {
@@ -81,6 +83,7 @@ void KManager::InitGui()
 	CubeVoxel::GetShader().GenerateDefaultShader();
 	RenderTarget::Init();
 	m_ScreenQuad.Init();
+	m_ComputeStorageBuffer.Init();
 	m_ComputeShader.Init();
 	m_ComputeShader.GenerateShader("RayTracing Shader");
 	m_OctreeHead = new OctreeNode<CubeVoxel>(Vector3i(0, STARTING_NODE_SIZE/2, 0), STARTING_NODE_SIZE);
@@ -165,20 +168,21 @@ OctreeNode<CubeVoxel>* KManager::GetOctree()
 
 void KManager::UpdateCubes()
 {
-	RenderData.clear();
 	m_CurrentWindow->GetMainCamera()->StartMoving();
 	
+	RenderData.clear();
+	KManager::GetOctree()->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(), std::placeholders::_1, std::placeholders::_2),RenderData);
 
-	while (m_IDsToDelete.size() != 0) {
-		CubeVoxel* cube = m_Cubes[m_IDsToDelete.front()];
-		m_CubesNotInUse.push(cube);
-		m_Cubes.erase(m_IDsToDelete.front());
-		m_IDsToDelete.pop();
-	}
+	/*
 
-	//m_CurrentWindow->GetMainCamera()->SetPosition(3, 2, 7);
+	vector<KMinMaxBoundData> RayRenderData;
+	RayRenderData.reserve(1000);
+	KManager::GetOctree()->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(), std::placeholders::_1, std::placeholders::_2), RayRenderData);
 
+	
 	m_ComputeShader.Bind();
+	m_ComputeStorageBuffer.CreateBuffer(RayRenderData.data(), (2 * sizeof(Vector3f)) * RayRenderData.size());
+	m_ComputeStorageBuffer.SetBinding(1);
 	m_ComputeShader.SetUniform3f("eyePos", m_CurrentWindow->GetMainCamera()->GetPosition());
 
 	Vector4f ray00, ray01, ray10, ray11;
@@ -204,17 +208,23 @@ void KManager::UpdateCubes()
 	m_ComputeShader.SetUniform3f("ray11", ray11);
 
 
-
+	
 
 	m_ScreenQuad.GetTexture().Init(GL_TEXTURE_2D, m_CurrentWindow->GetSize().x, m_CurrentWindow->GetSize().y,nullptr,GL_RGBA8);
 	m_ScreenQuad.GetTexture().BindImageTexture(0, GL_WRITE_ONLY, GL_RGBA8);
 	m_ComputeShader.Dispatch(m_CurrentWindow->GetSize().x, m_CurrentWindow->GetSize().y, 1);
 	
+	*/
+	
+	while (m_IDsToDelete.size() != 0) {
+		CubeVoxel* cube = m_Cubes[m_IDsToDelete.front()];
+		m_CubesNotInUse.push(cube);
+		m_Cubes.erase(m_IDsToDelete.front());
+		m_IDsToDelete.pop();
+	}
 
 	
 	
-
-	//KManager::GetOctree()->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(),std::placeholders::_1,std::placeholders::_2), RenderData);
 
 
 	if (m_CubesNotInUse.size() > 1000) {
@@ -222,7 +232,7 @@ void KManager::UpdateCubes()
 		m_CubesNotInUse.pop();
 	}
 
-	
+	/*
 	m_ComputeShader.Join();
 	m_ScreenQuad.Bind();
 	m_ScreenQuad.GetShader().Bind();
@@ -230,11 +240,12 @@ void KManager::UpdateCubes()
 	m_ScreenQuad.GetShader().SetUniform1i("tex0", 0);
 	
 	m_CurrentWindow->DrawCurrentBoundNoIB(6,GL_TRIANGLES);
-	/*
+	*/
+	
 	if (RenderData.size() > 0) {
 		m_CurrentWindow->DrawInstances(RenderData.size(), RenderData);
 	}
-	*/
+	
 
 
 	DrawGui();

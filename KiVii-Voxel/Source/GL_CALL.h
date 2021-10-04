@@ -40,6 +40,11 @@ struct KDrawData {
     glm::mat4 modelMatrix;
 };
 
+struct KMinMaxBoundData {
+    Vector3f min;
+    Vector3f max;
+};
+
 static string GetVec3AsString(Vector3f vec) {
     return { to_string(vec.x) + "," + to_string(vec.y) + "," + to_string(vec.z) };
 }

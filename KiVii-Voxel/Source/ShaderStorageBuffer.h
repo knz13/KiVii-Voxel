@@ -13,6 +13,7 @@ public:
 	virtual ~ShaderStorageBuffer();
 
 
+	void Init();
 	void CreateBuffer(void* data,int dataSize, GLenum access = GL_DYNAMIC_COPY);
 	GLvoid* MapBufferPointer();
 	void UnMapBufferPointer();

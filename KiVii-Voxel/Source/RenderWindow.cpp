@@ -119,6 +119,12 @@ bool RenderWindow::isOpen()
 	return !glfwWindowShouldClose(KManager::GetGLFWwindowPointer());
 }
 
+void RenderWindow::SetSize(int x, int y)
+{
+	m_Properties.size = { x,y };
+	GL_CALL(glViewport(0, 0, x, y));
+}
+
 float RenderWindow::GetRenderDistance()
 {
 	return m_Properties.farClipping;
@@ -146,7 +152,7 @@ void RenderWindow::SwapBuffers()
 {
 	int width, height;
 	glfwGetWindowSize(KManager::GetGLFWwindowPointer(), &width, &height);
-	GL_CALL(glViewport(0, 0, width, height));
+	this->SetSize(width, height);
 	glfwSwapBuffers(KManager::GetGLFWwindowPointer());
 }
 

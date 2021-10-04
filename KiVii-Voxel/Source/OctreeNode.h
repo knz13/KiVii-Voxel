@@ -14,6 +14,8 @@
 #define OUT_OF_NODE_BOUNDS 8
 
 
+
+
 //child:	0 1 2 3 4 5 6 7
 //x :		- - - - + + + +
 //y :		- - + + - - + +
@@ -34,7 +36,10 @@ class OctreeNode {
 	char GetPosInVec(Vector3i pos,bool isVoxelSize = false);
 	Vector3i GetPosInVec(char posInVec);
 
+
 	void GetObjectsInView(std::function<bool(Vector3i,float)> functionForFrustrumTesting,vector<KDrawData>& Objects);
+	void GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting, vector<KMinMaxBoundData>& Objects);
+
 	friend class KManager;
 public:
 	OctreeNode(Vector3i pos, int size, OctreeNode* parent = nullptr);
@@ -50,6 +55,29 @@ public:
 
 
 };
+
+template<typename T>
+inline void OctreeNode<T>::GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting, vector<KMinMaxBoundData>& Objects) {
+	if (nodeSize != 1) {
+		for (auto& child : childNodes) {
+			if (child != nullptr) {
+
+				if (functionForFrustrumTesting(child->nodePosition, child->nodeSize * VOXEL_ENTITY_SIZE)) {
+					child->GetObjectsInView(functionForFrustrumTesting, Objects);
+				}
+			}
+		}
+	}
+	else {
+		if (functionForFrustrumTesting(nodePosition, nodeSize * VOXEL_ENTITY_SIZE)) {
+			if (nodeInformation != nullptr) {
+				Vector3f worldSpaceCoords = nodeInformation->GetPositionInWorldSpace();
+				Objects.push_back({{worldSpaceCoords - VOXEL_ENTITY_SIZE/2.0f },{worldSpaceCoords + VOXEL_ENTITY_SIZE/2.0f}});
+			}
+		}
+	}
+
+}
 
 template<typename T>
 inline OctreeNode<T>* OctreeNode<T>::GetNodeAt(Vector3i pos)

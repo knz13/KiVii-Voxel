@@ -23,7 +23,6 @@
     <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\ComputeShader.cpp" />
     <ClCompile Include="Source\CubeVoxel.cpp" />
-    <ClCompile Include="Source\Frustrum.cpp" />
     <ClCompile Include="Source\GuiManager.cpp" />
     <ClCompile Include="Source\IndexBuffer.cpp" />
     <ClCompile Include="Source\KManager.cpp" />
@@ -59,7 +58,6 @@
     <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\ComputeShader.h" />
     <ClInclude Include="Source\CubeVoxel.h" />
-    <ClInclude Include="Source\Frustrum.h" />
     <ClInclude Include="Source\GL_CALL.h" />
     <ClInclude Include="Source\GuiManager.h" />
     <ClInclude Include="Source\IndexBuffer.h" />

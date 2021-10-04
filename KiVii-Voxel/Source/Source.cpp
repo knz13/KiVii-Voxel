@@ -13,7 +13,7 @@ using namespace std;
 
 int main() {
 
-	RenderWindow win(Vector2f(640, 480), "hello!");
+	RenderWindow win(Vector2f(1280, 720), "hello!");
 
 
 	for (int y = 0; y < 5;y++) {

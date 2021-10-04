@@ -2,13 +2,18 @@
 
 ShaderStorageBuffer::ShaderStorageBuffer()
 {
-	GL_CALL(glGenBuffers(1, &m_ID));
 	
 }
 
 ShaderStorageBuffer::~ShaderStorageBuffer()
 {
 }
+
+void ShaderStorageBuffer::Init()
+{
+	GL_CALL(glGenBuffers(1, &m_ID));
+}
+
 
 void ShaderStorageBuffer::CreateBuffer(void* data,int dataSize, GLenum access)
 {

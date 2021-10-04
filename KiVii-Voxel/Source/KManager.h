@@ -8,6 +8,7 @@ class VertexArray;
 class Camera;
 class CubeVoxel;
 class ComputeShader;
+class ShaderStorageBuffer;
 class KManager {
 	
 private:
@@ -21,6 +22,7 @@ private:
 	static queue<CubeVoxel*> m_CubesNotInUse;
 	static ScreenQuad m_ScreenQuad;
 	static ComputeShader m_ComputeShader;
+	static ShaderStorageBuffer m_ComputeStorageBuffer;
 
 	static void DrawGui();
 	

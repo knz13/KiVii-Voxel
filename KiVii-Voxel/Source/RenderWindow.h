@@ -39,6 +39,7 @@ public:
 	float GetRenderDistance();
 	glm::mat4 GetProjection();
 	glm::mat4 GetView();
+	void SetSize(int x, int y);
 	void SetMainCamera(Camera* camera);
 	Camera* GetMainCamera() { return m_MainCamera; }
 	bool isOpen();
