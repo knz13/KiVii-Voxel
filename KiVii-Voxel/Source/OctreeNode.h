@@ -90,47 +90,48 @@ inline OctreeNode<T>* OctreeNode<T>::GetNodeAt(Vector3i pos)
 			}
 			else {
 				childNodes[posInVec] = new OctreeNode<T>(this, posInVec);
+
 				return childNodes[posInVec]->GetNodeAt(pos);
 			}
 		}
 		else {
-			if (pos.x > nodePosition.x && pos.y > nodePosition.y && pos.z > nodePosition.z) {
+			if (pos.x >= nodePosition.x && pos.y >= nodePosition.y && pos.z >= nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z + nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->GetNodeAt(pos);
 			}
-			if (pos.x < nodePosition.x && pos.y > nodePosition.y && pos.z > nodePosition.z) {
+			if (pos.x < nodePosition.x && pos.y >= nodePosition.y && pos.z >= nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z + nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->GetNodeAt(pos);
 			}
-			if (pos.x > nodePosition.x && pos.y > nodePosition.y && pos.z < nodePosition.z) {
+			if (pos.x >= nodePosition.x && pos.y >= nodePosition.y && pos.z < nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z - nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->GetNodeAt(pos);
 			}
-			if (pos.x < nodePosition.x && pos.y > nodePosition.y && pos.z < nodePosition.z) {
+			if (pos.x < nodePosition.x && pos.y >= nodePosition.y && pos.z < nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y + nodeSize / 2, nodePosition.z - nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->GetNodeAt(pos);
 			}
-			if (pos.x > nodePosition.x && pos.y < nodePosition.y && pos.z > nodePosition.z) {
+			if (pos.x >= nodePosition.x && pos.y < nodePosition.y && pos.z >= nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z + nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->GetNodeAt(pos);
 			}
-			if (pos.x < nodePosition.x && pos.y < nodePosition.y && pos.z > nodePosition.z) {
+			if (pos.x < nodePosition.x && pos.y < nodePosition.y && pos.z >= nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x - nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z + nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
 				return parentNode->GetNodeAt(pos);
 			}
-			if (pos.x > nodePosition.x && pos.y < nodePosition.y && pos.z < nodePosition.z) {
+			if (pos.x >= nodePosition.x && pos.y < nodePosition.y && pos.z < nodePosition.z) {
 				parentNode = new OctreeNode<T>(Vector3i(nodePosition.x + nodeSize / 2, nodePosition.y - nodeSize / 2, nodePosition.z - nodeSize / 2), nodeSize * 2);
 				char thisPosInVec = parentNode->GetPosInVec(nodePosition);
 				parentNode->childNodes[thisPosInVec] = this;
@@ -147,12 +148,14 @@ inline OctreeNode<T>* OctreeNode<T>::GetNodeAt(Vector3i pos)
 	else {
 		if (nodeSize != 1) {
 			char posInVec = this->GetPosInVec(pos);
+
 			if (childNodes[posInVec] != nullptr) {
 				return childNodes[posInVec]->GetNodeAt(pos);
 			}
 			else {
 				childNodes[posInVec] = new OctreeNode<T>(this, posInVec);
 				return childNodes[posInVec]->GetNodeAt(pos);
+
 			}
 		}
 		else {
@@ -225,7 +228,10 @@ inline void OctreeNode<T>::GetObjectsInView(std::function<bool(Vector3i, float)>
 	else {
 		if (functionForFrustrumTesting(nodePosition, nodeSize * VOXEL_ENTITY_SIZE)) {
 			if (nodeInformation != nullptr) {
-				Objects.push_back(nodeInformation->GetDrawData((unsigned int)Objects.size()));
+				KDrawData data;
+				if (nodeInformation->GetDrawData((unsigned int)Objects.size(), data)) {
+					Objects.emplace_back(data);
+				}
 			}
 		}
 	}

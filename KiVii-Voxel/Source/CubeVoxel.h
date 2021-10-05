@@ -31,7 +31,7 @@ public:
 	CubeVoxel();
 	~CubeVoxel();
 
-	KDrawData GetDrawData(unsigned int id);
+	bool GetDrawData(unsigned int id,KDrawData& data);
 	void Move(int x,int y,int z);
 	void SetPosition(int x, int y, int z);
 	void SetColor(Color color);

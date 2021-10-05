@@ -1,5 +1,6 @@
 #include "CubeVoxel.h"
 #include "RenderWindow.h"
+#include "Camera.h"
 
 
 
@@ -38,10 +39,12 @@ CubeVoxel::~CubeVoxel()
 {
 }
 
-KDrawData CubeVoxel::GetDrawData(unsigned int id)
+bool CubeVoxel::GetDrawData(unsigned int id,KDrawData& data)
 {
 	this->SetupForDrawing(id);
-	return {m_Color.getNormalized(),m_ModelMatrix };
+	data = { m_Color.getNormalized(),m_ModelMatrix };
+	return true;
+	
 }
 
 void CubeVoxel::Move(int x, int y, int z)
