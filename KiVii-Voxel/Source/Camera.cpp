@@ -259,6 +259,11 @@ bool Camera::IsVoxelInFrustrum(Vector3i voxelPos, float voxelHalfSize)
 	return true;
 }
 
+glm::mat4 Camera::GetInvViewProjMat()
+{
+	return glm::inverse(win->GetProjection()* m_CurrentView);
+}
+
 
 
 

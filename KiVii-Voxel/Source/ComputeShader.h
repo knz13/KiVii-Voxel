@@ -14,7 +14,7 @@ public:
 
 
 	void Dispatch(int x_work_groups, int y_work_groups, int z_work_groups);
-	void Join();
+	void Join(GLenum barrier = GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	void Init();
 
 };

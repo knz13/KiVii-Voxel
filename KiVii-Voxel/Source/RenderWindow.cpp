@@ -11,21 +11,21 @@ static void window_maximize_callback(GLFWwindow* window, int maximized)
 	{
 		int width, height;
 		glfwGetWindowSize(KManager::GetGLFWwindowPointer(), &width, &height);
-		GL_CALL(glViewport(0, 0, width, height));
+		KManager::GetWindow()->SetSize(width, height);
 	}
 	else
 	{
 		int width, height;
 		glfwGetWindowSize(KManager::GetGLFWwindowPointer(), &width, &height);
-		GL_CALL(glViewport(0, 0, width, height));
+		KManager::GetWindow()->SetSize(width, height);
 	}
 }
 static void window_size_callback(GLFWwindow* window, int width, int height)
 {
-	GL_CALL(glViewport(0, 0, width, height));
+	KManager::GetWindow()->SetSize(width, height);
 }
 static void framebuffer_size_callback(GLFWwindow*, int width, int height) {
-	GL_CALL(glViewport(0, 0, width, height));
+	KManager::GetWindow()->SetSize(width, height);
 }
 
 RenderWindow::RenderWindow(Vector2f vec, string title)

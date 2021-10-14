@@ -1,9 +1,181 @@
 #version 430 core
 
 
+struct Box {
+	vec3 max;
+	vec3 min;
+};
+
+
+
+layout(local_size_x = 4, local_size_y = 4) in;
+
+layout (std430,binding=0) buffer objects
+{
+	float positions[];
+};
+
+
+layout(rgba8, binding = 1) uniform image2D img_output;
+
+layout (std430,binding=2) buffer lights
+{
+	float lightPositions[];
+};
+
+uniform mat4 cameraInvViewProj;
+uniform float cameraNear;
+uniform float cameraFar;
+uniform vec3 cameraPos;
+uniform float boxSize;
+#define STEPS 48
+#define MINIMUM_DISTANCE 0.01f
+#define MAXIMUM_DISTANCE 10000.0f
+
+/*
+float sdBox(vec3 point, vec3 bounds)
+{
+	vec3 q = abs(point) - bounds;
+	return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+};
+
+float GetMinDistance(vec3 point,vec3 center,float radius)
+{
+	return length(point-center)-radius;
+};
+
+float mapTheWorld(vec3 point)
+{
+	
+	float minDist = 9999.0f; 
+	float plane = point.y + 1;
+	
+	for (int i = 0;i<positions.length();i+=3){
+		float dist = sdBox(point-vec3(positions[i],positions[i+1],positions[i+2]),vec3(boxSize));
+		if(dist < minDist){
+			minDist = min(minDist,dist);
+		}
+	}
+	
+
+	//minDist = min(minDist,plane);
+
+	return minDist;
+}
+
+vec3 ray_march(vec3 rayOrigin,vec3 rayDirection)
+{
+	float distance_traveled = 0.0f;
+	vec3 currentPos;
+	int numberOfBounces = 0;
+
+	for (int i = 0; i < STEPS; i++)
+    {
+		
+		currentPos = rayOrigin + distance_traveled * rayDirection;
+
+		float distanceToClosest = mapTheWorld(currentPos);
+
+		if(distanceToClosest < MINIMUM_DISTANCE){
+			return vec3(i/48.0f,i/48.0f,i/48.0f);
+		}
+
+		if(distance_traveled > MAXIMUM_DISTANCE){
+			break;
+		}
+
+
+		distance_traveled += distanceToClosest;
+
+	}
+
+	return vec3(0.0);
+};
+*/
+
+vec2 intersectBox(vec3 origin, vec3 dir, const Box box) {
+
+  //Box box = {vec3(position.x+boxSize,position.y + boxSize,position.z+ boxSize),vec3(position.x-boxSize,position.y - boxSize,position.z- boxSize)};
+  vec3 tMin = (box.min - origin) / dir;
+  vec3 tMax = (box.max - origin) / dir;
+  vec3 t1 = min(tMin, tMax);
+  vec3 t2 = max(tMin, tMax);
+  float tNear = max(max(t1.x, t1.y), t1.z);
+  float tFar = min(min(t2.x, t2.y), t2.z);
+  return vec2(tNear, tFar);
+}
+
+#define MAX_SCENE_BOUNDS 10000.0
+
+struct hitinfo {
+  vec2 lambda;
+  int bi;
+};
+
+bool intersectBoxes(vec3 origin, vec3 dir, out hitinfo info) {
+  float smallest = MAX_SCENE_BOUNDS;
+  bool found = false;
+  for (int i = 0; i < positions.length(); i+=6) {
+	Box box = {{positions[i],positions[i+1],positions[i+2]},{positions[i+3],positions[i+4],positions[i+5]}};
+    vec2 lambda = intersectBox(origin, dir, box);
+    if (lambda.x > 0.0 && lambda.x < lambda.y && lambda.x < smallest) {
+      info.lambda = lambda;
+      info.bi = i;
+      smallest = lambda.x;
+      found = true;
+    }
+  }
+  Box ground = {vec3(400.0f,-1.0f,400.0f),vec3(-400.0f,-1.01f,-400.0f)};
+  vec2 lambda = intersectBox(origin, dir, ground);
+    if (lambda.x > 0.0 && lambda.x < lambda.y && lambda.x < smallest) {
+      info.lambda = lambda;
+      info.bi = positions.length()/6 + 1;
+      smallest = lambda.x;
+      found = true;
+    }
+
+	return found;
+}
+
+vec4 trace(vec3 origin, vec3 dir) {
+  hitinfo i;
+  if (intersectBoxes(origin, dir, i)) {
+    vec4 gray = vec4(i.bi / 60.0f + 0.5);
+    return vec4(gray.rgb, 1.0);
+  }
+  return vec4(0.0, 0.0, 0.0, 1.0);
+}
+
+
+vec3 ray_dir( float fov, vec2 size, vec2 pos ) {
+	vec2 xy = pos - size * 0.5;
+
+	float cot_half_fov = tan(( 90.0 - fov * 0.5)*3.1415/180.0f);	
+	float z = size.y * 0.5 * cot_half_fov;
+	
+	return normalize( vec3( xy, -z ) );
+}
 
 void main(){
 
+	ivec2 size = imageSize(img_output);
+
 	
+	ivec2 pix = ivec2(gl_GlobalInvocationID.xy);
+
+    if (pix.x >= size.x || pix.y >= size.y) {
+		return;
+    }
+    //vec2 pos = vec2(pix) / vec2(size.x, size.y);
+    //vec3 dir = mix(mix(ray00, ray01, pos.y), mix(ray10, ray11, pos.y), pos.x);
+
+	vec4 dir = cameraInvViewProj * vec4((2*vec2(float(pix.x)/float(size.x),float(pix.y)/float(size.y))-1.0f)*(cameraFar-cameraNear),cameraFar+cameraNear,cameraFar-cameraNear);
+	
+
+	//dir = normalize(vec3(pix.x,pix.y,-1));
+
+    vec4 pixelOutColor = trace(cameraPos,normalize(dir).xyz);
+
+	imageStore(img_output,pix,pixelOutColor);
 
 }

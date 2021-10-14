@@ -15,9 +15,9 @@ void ComputeShader::Dispatch(int x_work_groups, int y_work_groups, int z_work_gr
 	GL_CALL(glDispatchCompute(x_work_groups, y_work_groups, z_work_groups));
 }
 
-void ComputeShader::Join()
+void ComputeShader::Join(GLenum barrier)
 {
-	GL_CALL(glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT));
+	GL_CALL(glMemoryBarrier(barrier));
 	this->Unbind();
 }
 

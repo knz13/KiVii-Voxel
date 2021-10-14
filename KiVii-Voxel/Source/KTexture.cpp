@@ -12,6 +12,41 @@ KTexture::~KTexture()
 	}
 }
 
+void KTexture::Init2D(int width, int height, void* data, int internalFormat, int border, GLenum format)
+{
+	GL_CALL(glGenTextures(1, &m_ID));
+	this->Bind(0);
+	GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+	GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+	GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+	if (data != nullptr) {
+		GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data));
+	}
+	else {
+		GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, NULL));
+	}
+	this->Unbind();
+}
+
+void KTexture::Init3D(int width, int height, int depth, void* data, int internalFormat, int border, GLenum format)
+{
+	GL_CALL(glGenTextures(1, &m_ID));
+	this->Bind(0);
+	GL_CALL(glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+	GL_CALL(glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+	GL_CALL(glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT));
+	GL_CALL(glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GL_CALL(glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+	if (data != nullptr) {
+		GL_CALL(glTexImage3D(GL_TEXTURE_3D, 0, internalFormat, width, height,depth, 0, format, GL_UNSIGNED_BYTE, data));
+	}
+	else {
+		GL_CALL(glTexImage3D(GL_TEXTURE_3D, 0, internalFormat, width, height,depth, 0, format, GL_UNSIGNED_BYTE, NULL));
+	}
+	this->Unbind();
+}
+
 void KTexture::Init(GLenum type, int width, int height, void* data, int internalFormat, int border, GLenum format)
 {
 	//todo: add more cases to switch case.

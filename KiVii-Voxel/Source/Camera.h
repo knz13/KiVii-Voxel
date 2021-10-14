@@ -10,7 +10,7 @@ class Camera {
 	struct Frustrum {
 		vector<Vector4f> planeNormals;
 		glm::mat4 inverseViewProjMat;
-		float frustrumFovIncrease = 2.0f;
+		float frustrumFovIncrease = 15.0f;
 	};
 private:
 	int m_ID = -1;
@@ -65,4 +65,5 @@ public:
 	glm::vec3 GetUpVector() { return m_Up; }
 	glm::mat4 GetView() {  return m_CurrentView; }
 	glm::vec3 GetPosition() { return m_CurrentPos; }
+	glm::mat4 GetInvViewProjMat();
 };

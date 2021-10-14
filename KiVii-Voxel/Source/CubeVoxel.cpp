@@ -30,7 +30,7 @@ void CubeVoxel::Reset()
 }
 
 CubeVoxel::CubeVoxel()
-	:m_ModelMatrix(glm::mat4(1.0f)), m_CurrentPosition({ 0,-1,0 }), m_Color(Color::White),m_IsRendered(false)
+	:m_ModelMatrix(glm::mat4(1.0f)), m_CurrentPosition({ 0,-1,0 }), m_Color(Color::White),m_IsRendered(false),m_IsInTree(false)
 {
 	KManager::AddCube(this);
 }
@@ -49,9 +49,9 @@ bool CubeVoxel::GetDrawData(unsigned int id,KDrawData& data)
 
 void CubeVoxel::Move(int x, int y, int z)
 {
-	if (m_IsRendered) {
+	if (m_IsInTree) {
 		KManager::GetOctree()->RemoveInformation(m_CurrentPosition);
-		m_IsRendered = false;
+		m_IsInTree = false;
 	}
 
 
@@ -62,16 +62,16 @@ void CubeVoxel::Move(int x, int y, int z)
 	
 	m_CurrentPosition.z += z;
 	
-	if (!m_IsRendered) {
-		m_IsRendered = KManager::GetOctree()->Insert(m_CurrentPosition, this);
+	if (!m_IsInTree) {
+		m_IsInTree = KManager::GetOctree()->Insert(m_CurrentPosition, this);
 	}
 }
 
 void CubeVoxel::SetPosition(int x, int y, int z)
 {
-	if (m_IsRendered) {
+	if (m_IsInTree) {
 		KManager::GetOctree()->RemoveInformation(m_CurrentPosition);
-		m_IsRendered = false;
+		m_IsInTree = false;
 	}
 
 	m_CurrentPosition.x = x;
@@ -80,8 +80,8 @@ void CubeVoxel::SetPosition(int x, int y, int z)
 	}
 	m_CurrentPosition.z = z;
 
-	if (!m_IsRendered) {
-		m_IsRendered = KManager::GetOctree()->Insert(m_CurrentPosition, this);
+	if (!m_IsInTree) {
+		m_IsInTree = KManager::GetOctree()->Insert(m_CurrentPosition, this);
 	}
 	
 }

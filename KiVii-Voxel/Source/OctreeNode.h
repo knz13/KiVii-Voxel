@@ -36,9 +36,11 @@ class OctreeNode {
 	char GetPosInVec(Vector3i pos,bool isVoxelSize = false);
 	Vector3i GetPosInVec(char posInVec);
 
-
-	void GetObjectsInView(std::function<bool(Vector3i,float)> functionForFrustrumTesting,vector<KDrawData>& Objects);
+	void GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting, vector<KDrawData>& Objects);
 	void GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting, vector<KMinMaxBoundData>& Objects);
+	void GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting, vector<Vector4f>& positions);
+	void GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting, vector<float>& positions);
+	
 
 	friend class KManager;
 public:
@@ -209,6 +211,74 @@ inline Vector3i OctreeNode<T>::GetPosInVec(char posInVec)
 		break;
 	}
 }
+
+template<typename T>
+inline void OctreeNode<T>::GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting, vector<Vector4f>& positions)
+{
+
+	//TODO
+	if (nodeSize != 1) {
+		for (auto& child : childNodes) {
+			if (child != nullptr) {
+
+				if (functionForFrustrumTesting(child->nodePosition, child->nodeSize * VOXEL_ENTITY_SIZE)) {
+					child->GetObjectsInView(functionForFrustrumTesting, positions);
+				}
+			}
+		}
+	}
+	else {
+		if (functionForFrustrumTesting(nodePosition, nodeSize * VOXEL_ENTITY_SIZE)) {
+			if (nodeInformation != nullptr) {
+				positions.emplace_back(Vector4f(nodeInformation->GetPosition(),1.0f));
+			}
+		}
+	}
+
+
+}
+template<typename T>
+inline void OctreeNode<T>::GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting, vector<float>& positions)
+{
+
+	//TODO
+	if (nodeSize != 1) {
+		for (auto& child : childNodes) {
+			if (child != nullptr) {
+
+				if (functionForFrustrumTesting(child->nodePosition, child->nodeSize * VOXEL_ENTITY_SIZE)) {
+					child->GetObjectsInView(functionForFrustrumTesting, positions);
+				}
+			}
+		}
+	}
+	else {
+		if (functionForFrustrumTesting(nodePosition, nodeSize * VOXEL_ENTITY_SIZE)) {
+			if (nodeInformation != nullptr) {
+				
+				KMinMaxBoundData data;
+				data.max = nodeInformation->GetPositionInWorldSpace() + VOXEL_ENTITY_SIZE / 2;
+				data.min = nodeInformation->GetPositionInWorldSpace() - VOXEL_ENTITY_SIZE / 2;
+				positions.push_back(data.max.x);
+				positions.push_back(data.max.y);
+				positions.push_back(data.max.z);
+				positions.push_back(data.min.x);
+				positions.push_back(data.min.y);
+				positions.push_back(data.min.z);
+				
+				/*
+				Vector3f position = nodeInformation->GetPositionInWorldSpace();
+				positions.push_back(position.x);
+				positions.push_back(position.y);
+				positions.push_back(position.z);
+				*/
+			}
+		}
+	}
+
+
+}
+
 
 template<typename T>
 inline void OctreeNode<T>::GetObjectsInView(std::function<bool(Vector3i, float)> functionForFrustrumTesting,vector<KDrawData>& Objects)

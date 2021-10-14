@@ -16,10 +16,12 @@ private:
 	Vector3i m_CurrentPosition;
 	Color m_Color;
 	bool m_IsRendered = false;
+	bool m_IsInTree = false;
 
 	void SetupModelMatrix();
 	void Reset();
 	friend class KManager;
+	
 protected:
 	void SetupForDrawing(unsigned int m_ID);
 

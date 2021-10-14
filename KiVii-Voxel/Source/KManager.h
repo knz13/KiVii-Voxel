@@ -7,13 +7,15 @@ class RenderWindow;
 class VertexArray;
 class Camera;
 class CubeVoxel;
+class KTexture;
 class ComputeShader;
 class ShaderStorageBuffer;
 class KManager {
 	
 private:
 	static RenderWindow* m_CurrentWindow;
-	static vector<KDrawData> RenderData;
+	static vector<float> RenderData;
+	static vector<KMinMaxBoundData> MarchingData;
 	static GLFWwindow* m_CurrentGLFWwindowPointer;
 	static unordered_map<int,CubeVoxel*> m_Cubes;
 	static unordered_map<int, Camera*> m_Cameras;
@@ -41,6 +43,10 @@ public:
 	static void DeleteCube(CubeVoxel* cube);
 
 	static float GetDeltaTime();
+	static void GetObjectsInView(vector<float>& objects);
+
+	static void BeginFrame();
+	static void EndFrame();
 
 	static OctreeNode<CubeVoxel>* GetOctree();
 	static void UpdateCubes();

@@ -34,6 +34,7 @@
     <ClCompile Include="Source\ScreenQuad.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderStorageBuffer.cpp" />
+    <ClCompile Include="Source\ShaderStorageBufferLayout.cpp" />
     <ClCompile Include="Source\Source.cpp" />
     <ClCompile Include="Source\VertexArray.cpp" />
     <ClCompile Include="Source\VertexBuffer.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="Source\ScreenQuad.h" />
     <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\ShaderStorageBuffer.h" />
+    <ClInclude Include="Source\ShaderStorageBufferLayout.h" />
     <ClInclude Include="Source\VertexArray.h" />
     <ClInclude Include="Source\VertexBuffer.h" />
     <ClInclude Include="Source\VertexBufferLayout.h" />
@@ -367,6 +369,7 @@
   <ItemGroup>
     <None Include="Resources\Shaders\Basic Shader\shader.frag" />
     <None Include="Resources\Shaders\Basic Shader\shader.vert" />
+    <None Include="Resources\Shaders\OctreeGPU Shader\shader.comp" />
     <None Include="Resources\Shaders\RayTracing Shader\shader.comp" />
     <None Include="Resources\Shaders\ScreenQuad Shader\shader.frag" />
     <None Include="Resources\Shaders\ScreenQuad Shader\shader.vert" />

@@ -61,7 +61,7 @@ static void AssertAndPrint(bool teste, string msg) {
     }
 }
 
-
+#define GET_VAR_NAME(x) #x
 #define GL_CALL(x) GLClearError(); x; ASSERT(gl_Log_Call(#x,__FILE__,__LINE__))
 #define GL_CALL_WITH_RETURN(x,y) GLClearError(); y=x; ASSERT(gl_Log_Call(#x,__FILE__,__LINE__))
 
