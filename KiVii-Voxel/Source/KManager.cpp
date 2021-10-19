@@ -20,53 +20,6 @@ ComputeShader KManager::m_ComputeShader;
 ScreenQuad KManager::m_ScreenQuad;
 ShaderStorageBuffer KManager::m_ComputeStorageBuffer;
 
-void KManager::DrawGui()
-{
-	GuiManager::Begin();
-
-	
-	ImGui::Begin("Hello!");
-	
-	
-	if (ImGui::GetMousePos().x >= ImGui::GetWindowPos().x && ImGui::GetMousePos().x <= ImGui::GetWindowPos().x + ImGui::GetWindowSize().x) {
-		if (ImGui::GetMousePos().y >= ImGui::GetWindowPos().y && ImGui::GetMousePos().y <= ImGui::GetWindowPos().y + ImGui::GetWindowSize().y)
-		{
-			m_CurrentWindow->GetMainCamera()->StopMoving();
-		}
-	}
-	ImGui::BulletText(("Camera Dir: " + GetVec3AsString(m_CurrentWindow->GetMainCamera()->m_Direction)).c_str());
-	ImGui::BulletText(("Camera Pos: " + GetVec3AsString(m_CurrentWindow->GetMainCamera()->GetPosition())).c_str());
-	ImGui::InputFloat("Camera Speed", &m_CurrentWindow->GetMainCamera()->m_MovingSpeed);
-	ImGui::BulletText(("Framerate: " + to_string((int)(1/m_CurrentWindow->m_DeltaTime))).c_str());
-	ImGui::BulletText(("Number Of Objects On Screen: " + to_string(RenderData.size()/3)).c_str());
-
-	ImGui::BulletText("Fov");
-	ImGui::SameLine();
-	
-	if (ImGui::SliderFloat("##323125", &m_CurrentWindow->GetMainCamera()->m_Fov, 0.0f, 100.0f)) {
-		m_CurrentWindow->SetMainCamera(m_CurrentWindow->GetMainCamera());
-	}
-
-	ImGui::BulletText("Fov Cutoff");
-	ImGui::SameLine();
-	ImGui::SliderFloat("##2321", &m_CurrentWindow->GetMainCamera()->m_Frustrum.frustrumFovIncrease, -m_CurrentWindow->GetMainCamera()->GetFov() + 1, 50.0f);
-
-
-	ImGui::BulletText("Draw Distance");
-	ImGui::SameLine();
-	if (ImGui::SliderFloat("##231", &m_CurrentWindow->m_Properties.farClipping, 10.0f, 300.0f)) {
-		m_CurrentWindow->SetMainCamera(m_CurrentWindow->GetMainCamera());
-	}
-
-
-	ImGui::End();
-
-
-
-	GuiManager::End();
-
-	//m_CurrentWindow->GetMainCamera()->StartMoving();
-}
 
 GLFWwindow*& KManager::Init(RenderWindow* win)
 {
@@ -84,7 +37,7 @@ void KManager::InitGui()
 	CubeVoxel::GetShader().GenerateDefaultShader();
 	RenderTarget::Init();
 	m_ScreenQuad.Init();
-	m_ScreenQuad.GetTexture().Init2D(m_CurrentWindow->GetSize().x, m_CurrentWindow->GetSize().y, nullptr, GL_RGBA8, 0, GL_RGBA);
+	m_ScreenQuad.GetTexture().Init2D(static_cast<int>(m_CurrentWindow->GetSize().x), static_cast<int>(m_CurrentWindow->GetSize().y), nullptr, GL_RGBA8, 0, GL_RGBA);
 	m_ComputeStorageBuffer.Init();
 	m_ComputeShader.Init();
 	m_ComputeShader.GenerateShader("RayTracing Shader");
@@ -167,6 +120,52 @@ void KManager::GetObjectsInView(vector<float>& objects)
 	GetOctree()->GetObjectsInView(std::bind(&Camera::IsVoxelInFrustrum, m_CurrentWindow->GetMainCamera(), std::placeholders::_1, std::placeholders::_2), objects);
 }
 
+void KManager::BeginGUI()
+{
+	GuiManager::Begin();
+
+
+	ImGui::Begin("Hello!");
+
+
+	if (ImGui::GetMousePos().x >= ImGui::GetWindowPos().x && ImGui::GetMousePos().x <= ImGui::GetWindowPos().x + ImGui::GetWindowSize().x) {
+		if (ImGui::GetMousePos().y >= ImGui::GetWindowPos().y && ImGui::GetMousePos().y <= ImGui::GetWindowPos().y + ImGui::GetWindowSize().y)
+		{
+			m_CurrentWindow->GetMainCamera()->StopMoving();
+		}
+	}
+	ImGui::BulletText(("Camera Dir: " + GetVec3AsString(m_CurrentWindow->GetMainCamera()->m_Direction)).c_str());
+	ImGui::BulletText(("Camera Pos: " + GetVec3AsString(m_CurrentWindow->GetMainCamera()->GetPosition())).c_str());
+	ImGui::InputFloat("Camera Speed", &m_CurrentWindow->GetMainCamera()->m_MovingSpeed);
+	ImGui::BulletText(("Framerate: " + to_string((int)(1 / m_CurrentWindow->m_DeltaTime))).c_str());
+	//ImGui::BulletText(("Number Of Objects On Screen: " + to_string(RenderData.size() / 3)).c_str());
+
+	ImGui::BulletText("Fov");
+	ImGui::SameLine();
+
+	if (ImGui::SliderFloat("##323125", &m_CurrentWindow->GetMainCamera()->m_Fov, 0.0f, 100.0f)) {
+		m_CurrentWindow->SetMainCamera(m_CurrentWindow->GetMainCamera());
+	}
+
+	ImGui::BulletText("Fov Cutoff");
+	ImGui::SameLine();
+	ImGui::SliderFloat("##2321", &m_CurrentWindow->GetMainCamera()->m_Frustrum.frustrumFovIncrease, -m_CurrentWindow->GetMainCamera()->GetFov() + 1, 50.0f);
+
+
+	ImGui::BulletText("Draw Distance");
+	ImGui::SameLine();
+	if (ImGui::SliderFloat("##231", &m_CurrentWindow->m_Properties.farClipping, 10.0f, 300.0f)) {
+		m_CurrentWindow->SetMainCamera(m_CurrentWindow->GetMainCamera());
+	}
+
+}
+
+void KManager::EndGUI()
+{
+	ImGui::End();
+	GuiManager::End();
+}
+
 void KManager::BeginFrame()
 {
 	m_CurrentWindow->GetMainCamera()->StartMoving();
@@ -187,7 +186,7 @@ void KManager::BeginFrame()
 
 void KManager::EndFrame()
 {
-	DrawGui();
+	
 }
 
 OctreeNode<CubeVoxel>* KManager::GetOctree()
@@ -237,10 +236,10 @@ void KManager::UpdateCubes()
 		*/
 		m_ScreenQuad.GetTexture().Bind(1);
 		m_ScreenQuad.GetTexture().BindImageTexture(1, GL_READ_WRITE, GL_RGBA8);
-		m_ComputeStorageBuffer.CreateBuffer(RenderData.data(), RenderData.size() * sizeof(float), GL_DYNAMIC_COPY);
+		m_ComputeStorageBuffer.CreateBuffer(RenderData.data(), (int)RenderData.size() * sizeof(float), GL_DYNAMIC_COPY);
 		m_ComputeStorageBuffer.SetBinding(0);
 		
-		m_ComputeShader.Dispatch(m_CurrentWindow->GetSize().x, m_CurrentWindow->GetSize().y, 1);
+		m_ComputeShader.Dispatch((int)m_CurrentWindow->GetSize().x, (int)m_CurrentWindow->GetSize().y, 1);
 
 	}
 
@@ -279,7 +278,7 @@ void KManager::UpdateCubes()
 	}
 	*/
 	
-	DrawGui();
+	//DrawGui();
 }
 
 Vector3f KManager::GetVoxelPosInWorldSpace(Vector3i pos)
