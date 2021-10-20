@@ -23,7 +23,7 @@ void Camera::CalculateFrustrumPlanes()
 	rightNormal.z = viewProjMat[11] - viewProjMat[8];
 	rightNormal.w = viewProjMat[15] - viewProjMat[12];
 	/* Normalize the result */
-	float t = sqrt(pow(rightNormal.x, 2) + pow(rightNormal.y, 2) + pow(rightNormal.z, 2));
+	float t = sqrt(static_cast<float>(pow(rightNormal.x, 2)) + static_cast<float>(pow(rightNormal.y, 2)) + static_cast<float>(pow(rightNormal.z, 2)));
 	rightNormal.x /= t;
 	rightNormal.y /= t;
 	rightNormal.z /= t;
@@ -34,7 +34,7 @@ void Camera::CalculateFrustrumPlanes()
 	leftNormal.z = viewProjMat[11] + viewProjMat[8];
 	leftNormal.w = viewProjMat[15] + viewProjMat[12];
 	/* Normalize the result */
-	t = sqrt(pow(leftNormal.x, 2) + pow(leftNormal.y, 2) + pow(leftNormal.z, 2));
+	t = sqrt(static_cast<float>(pow(leftNormal.x, 2)) + static_cast<float>(pow(leftNormal.y, 2)) + static_cast<float>(pow(leftNormal.z, 2)));
 	leftNormal.x /= t;
 	leftNormal.y /= t;
 	leftNormal.z /= t;
@@ -45,7 +45,7 @@ void Camera::CalculateFrustrumPlanes()
 	bottomNormal.z = viewProjMat[11] + viewProjMat[9];
 	bottomNormal.w = viewProjMat[15] + viewProjMat[13];
 	/* Normalize the result */
-	t = sqrt(pow(bottomNormal.x, 2) + pow(bottomNormal.y, 2) + pow(bottomNormal.z, 2));
+	t = sqrt(static_cast<float>(pow(bottomNormal.x, 2)) + static_cast<float>(pow(bottomNormal.y, 2)) + static_cast<float>(pow(bottomNormal.z, 2)));
 	bottomNormal.x /= t;
 	bottomNormal.y /= t;
 	bottomNormal.z /= t;
@@ -56,7 +56,7 @@ void Camera::CalculateFrustrumPlanes()
 	topNormal.z = viewProjMat[11] - viewProjMat[9];
 	topNormal.w = viewProjMat[15] - viewProjMat[13];
 	/* Normalize the result */
-	t = sqrt(pow(topNormal.x, 2) + pow(topNormal.y, 2) + pow(topNormal.z, 2));
+	t = sqrt(static_cast<float>(pow(topNormal.x, 2)) + static_cast<float>(pow(topNormal.y, 2)) + static_cast<float>(pow(topNormal.z, 2)));
 	topNormal.x /= t;
 	topNormal.y /= t;
 	topNormal.z /= t;
@@ -67,7 +67,7 @@ void Camera::CalculateFrustrumPlanes()
 	farNormal.z = viewProjMat[11] - viewProjMat[10];
 	farNormal.w = viewProjMat[15] - viewProjMat[14];
 	/* Normalize the result */
-	t = sqrt(pow(farNormal.x, 2) + pow(farNormal.y, 2) + pow(farNormal.z, 2));
+	t = sqrt(static_cast<float>(pow(farNormal.x, 2)) + static_cast<float>(pow(farNormal.y, 2)) + static_cast<float>(pow(farNormal.z, 2)));
 	farNormal.x /= t;
 	farNormal.y /= t;
 	farNormal.z /= t;
@@ -78,7 +78,7 @@ void Camera::CalculateFrustrumPlanes()
 	nearNormal.z = viewProjMat[11] + viewProjMat[10];
 	nearNormal.w = viewProjMat[15] + viewProjMat[14];
 	/* Normalize the result */
-	t = sqrt(pow(nearNormal.x, 2) + pow(nearNormal.y, 2) + pow(nearNormal.z, 2));
+	t = sqrt(static_cast<float>(pow(nearNormal.x, 2)) + static_cast<float>(pow(nearNormal.y, 2)) + static_cast<float>(pow(nearNormal.z, 2)));
 	nearNormal.x /= t;
 	nearNormal.y /= t;
 	nearNormal.z /= t;

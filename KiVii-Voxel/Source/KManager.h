@@ -26,7 +26,6 @@ private:
 	static ComputeShader m_ComputeShader;
 	static ShaderStorageBuffer m_ComputeStorageBuffer;
 
-	static void DrawGui();
 	
 public:
 	static GLFWwindow*& Init(RenderWindow* win);
@@ -44,6 +43,9 @@ public:
 
 	static float GetDeltaTime();
 	static void GetObjectsInView(vector<float>& objects);
+
+	static void BeginGUI();
+	static void EndGUI();
 
 	static void BeginFrame();
 	static void EndFrame();

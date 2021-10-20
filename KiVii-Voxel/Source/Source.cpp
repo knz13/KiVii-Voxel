@@ -118,7 +118,11 @@ int main() {
 
 
 		KManager::EndFrame();
+		KManager::BeginGUI();
 
+		ImGui::BulletText(("Number Of Objects: " + to_string(renderData.size())).c_str());
+
+		KManager::EndGUI();
 		
 
 		win.SwapBuffers();
