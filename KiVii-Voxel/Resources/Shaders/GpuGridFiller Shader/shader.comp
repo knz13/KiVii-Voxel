@@ -1,0 +1,26 @@
+#version 430 core
+
+
+layout (local_size_x = 1) in;
+
+layout (rgba8,binding = 0) uniform image3D img_output;
+
+layout (std430,binding = 1) buffer objectsToAdd
+{
+	float positions[];
+};
+
+uniform vec3 cameraPos;
+
+
+void main()
+{
+int pix = int(gl_GlobalInvocationID.x) * 6;
+
+vec3 objPos = vec3(positions[pix],positions[pix+1],positions[pix+2]);
+
+vec3 cameraToObj = objPos-cameraPos;
+
+imageStore(img_output,ivec3(cameraToObj.x+imageSize(img_output).x/2.0f,cameraToObj.y+imageSize(img_output).y/2.0f,cameraToObj.z + imageSize(img_output).z/2.0f),vec4(positions[pix+3],positions[pix+4],positions[pix+5],1.0f));
+
+}
